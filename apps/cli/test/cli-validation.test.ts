@@ -69,6 +69,23 @@ test("allows workers + D1 flags before server deploy is resolved by prompts", ()
   expect(result.isOk()).toBe(true);
 });
 
+test("threads the python ecosystem fields through the flag path", () => {
+  const options = {
+    ecosystem: "python",
+    pythonApp: "fastapi",
+    packageManager: "uv",
+  } as const;
+
+  const result = processAndValidateFlags(options, getProvidedFlags(options), "py-api");
+
+  expect(result.isOk()).toBe(true);
+  if (result.isOk()) {
+    // Without this the real CLI silently drops --ecosystem and builds a TS app.
+    expect(result.value.ecosystem).toBe("python");
+    expect(result.value.pythonApp).toBe("fastapi");
+  }
+});
+
 test("still rejects D1 when the remaining prompt flow cannot resolve it to a valid target", () => {
   const options = {
     backend: "hono",

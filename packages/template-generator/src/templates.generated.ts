@@ -31059,6 +31059,100 @@ function SuccessPage() {
 	{/if}
 </div>
 `],
+  ["python/fastapi/_gitignore", `# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Virtual environments
+.venv/
+.env
+
+# uv
+.uv/
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+`],
+  ["python/fastapi/main.py.hbs", `from fastapi import FastAPI
+
+app = FastAPI(title="{{projectName}}")
+
+
+@app.get("/")
+def read_root() -> dict[str, str]:
+    return {"status": "ok"}
+
+
+@app.get("/health")
+def health() -> dict[str, str]:
+    return {"status": "healthy"}
+`],
+  ["python/fastapi/pyproject.toml.hbs", `[project]
+name = "{{projectName}}"
+version = "0.1.0"
+description = "A FastAPI service scaffolded with Better-T-Stack"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi[standard]>=0.115",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+`],
+  ["python/fastapi/README.md.hbs", `# {{projectName}}
+
+A [FastAPI](https://fastapi.tiangolo.com) service scaffolded with [Better-T-Stack](https://better-t-stack.dev).
+
+## Getting started
+
+Install dependencies and create the virtual environment with [uv](https://docs.astral.sh/uv/):
+
+\`\`\`sh
+uv sync
+\`\`\`
+
+Run the development server:
+
+\`\`\`sh
+uv run fastapi dev main.py
+\`\`\`
+
+The API is then available at http://localhost:8000 (interactive docs at \`/docs\`).
+
+Run the test suite:
+
+\`\`\`sh
+uv run pytest
+\`\`\`
+`],
+  ["python/fastapi/tests/test_app.py.hbs", `from fastapi.testclient import TestClient
+
+from main import app
+
+client = TestClient(app)
+
+
+def test_read_root_ok() -> None:
+    response = client.get("/")
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok"}
+
+
+def test_health_ok() -> None:
+    response = client.get("/health")
+    assert response.status_code == 200
+`],
   ["python/library/_gitignore", `# Python
 __pycache__/
 *.py[cod]
@@ -31119,4 +31213,4 @@ def test_version() -> None:
 `]
 ]);
 
-export const TEMPLATE_COUNT = 479;
+export const TEMPLATE_COUNT = 484;

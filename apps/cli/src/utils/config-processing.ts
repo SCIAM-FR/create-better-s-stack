@@ -3,16 +3,23 @@ import path from "node:path";
 import { Result } from "better-result";
 
 import type {
+  Accelerator,
   API,
   Auth,
   Backend,
   CLIInput,
   Database,
   DatabaseSetup,
+  Ecosystem,
   ORM,
   PackageManager,
   Payments,
   ProjectConfig,
+  PythonAgents,
+  PythonApp,
+  PythonGenai,
+  PythonMl,
+  PythonOrm,
   Runtime,
   ServerDeploy,
   WebDeploy,
@@ -96,6 +103,42 @@ export function processFlags(options: CLIInput, projectName?: string) {
 
   if (options.serverDeploy) {
     config.serverDeploy = options.serverDeploy as ServerDeploy;
+  }
+
+  // Python ecosystem fields. Without threading these, the flag→config path
+  // silently drops `--ecosystem python` (and every `--python-*` choice) and the
+  // CLI builds a TypeScript project. The TS path is unaffected: `ecosystem`
+  // defaults to `ts` and the python fields stay at their inert defaults.
+  if (options.ecosystem) {
+    config.ecosystem = options.ecosystem as Ecosystem;
+  }
+
+  if (options.pythonApp) {
+    config.pythonApp = options.pythonApp as PythonApp;
+  }
+
+  if (options.pythonOrm) {
+    config.pythonOrm = options.pythonOrm as PythonOrm;
+  }
+
+  if (options.accelerator) {
+    config.accelerator = options.accelerator as Accelerator;
+  }
+
+  if (options.pythonStarter !== undefined) {
+    config.pythonStarter = options.pythonStarter;
+  }
+
+  if (options.pythonMl && options.pythonMl.length > 0) {
+    config.pythonMl = processArrayOption<PythonMl>(options.pythonMl);
+  }
+
+  if (options.pythonGenai && options.pythonGenai.length > 0) {
+    config.pythonGenai = processArrayOption<PythonGenai>(options.pythonGenai);
+  }
+
+  if (options.pythonAgents && options.pythonAgents.length > 0) {
+    config.pythonAgents = processArrayOption<PythonAgents>(options.pythonAgents);
   }
 
   const derivedName = deriveProjectName(projectName, options.projectDirectory);

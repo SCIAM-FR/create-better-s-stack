@@ -25,6 +25,14 @@ export function processPythonTemplates(
     return;
   }
 
+  if (config.pythonApp === "fastapi") {
+    // A sole fastapi app is a flat-root project (plan §261): pyproject + the
+    // `main.py` entrypoint + tests at the root, `uv sync` at the root. The
+    // `apps/api` workspace layout is reserved for `fastapi+streamlit` (Slice 5).
+    processTemplatesFromPrefix(vfs, templates, "python/fastapi", "", config);
+    return;
+  }
+
   throw new GeneratorError({
     message: `Python app shape "${config.pythonApp}" is not yet implemented.`,
     phase: "python",

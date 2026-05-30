@@ -53,7 +53,12 @@ export function buildPythonNextSteps(config: ProjectConfig & { depsInstalled: bo
     lines.push(`${pc.cyan(`${step++}.`)} uv sync`);
   }
 
-  const runHint = pythonApp === "library" ? "uv run pytest" : "uv run python -m <your_module>";
+  const runHint =
+    pythonApp === "library"
+      ? "uv run pytest"
+      : pythonApp === "fastapi"
+        ? "uv run fastapi dev main.py"
+        : "uv run python -m <your_module>";
   lines.push(`${pc.cyan(`${step++}.`)} ${runHint}`);
 
   return lines.join("\n");
