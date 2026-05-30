@@ -14,7 +14,6 @@ import type * as healthCheck from "../healthCheck.js";
 import type * as hooks from "../hooks.js";
 import type * as http from "../http.js";
 import type * as showcase from "../showcase.js";
-import type * as stats from "../stats.js";
 import type * as testimonials from "../testimonials.js";
 
 import type {
@@ -30,7 +29,6 @@ declare const fullApi: ApiFromModules<{
   hooks: typeof hooks;
   http: typeof http;
   showcase: typeof showcase;
-  stats: typeof stats;
   testimonials: typeof testimonials;
 }>;
 
@@ -60,6 +58,4 @@ export declare const internal: FilterApi<
   FunctionReference<any, "internal">
 >;
 
-export declare const components: {
-  ossStats: import("@erquhart/convex-oss-stats/_generated/component.js").ComponentApi<"ossStats">;
-};
+export declare const components: {};
