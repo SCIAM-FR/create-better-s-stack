@@ -31153,6 +31153,204 @@ def test_health_ok() -> None:
     response = client.get("/health")
     assert response.status_code == 200
 `],
+  ["python/fasthtml/_gitignore", `# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Virtual environments
+.venv/
+.env
+
+# uv
+.uv/
+
+# FastHTML
+.sesskey
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+`],
+  ["python/fasthtml/app.py.hbs", `from fasthtml.common import H1, P, Titled, fast_app, serve
+
+app, rt = fast_app()
+
+
+@rt("/")
+def get():
+    return Titled(
+        "{{projectName}}",
+        H1("{{projectName}}"),
+        P("Welcome to your FastHTML app, scaffolded with Better-T-Stack."),
+    )
+
+
+serve()
+`],
+  ["python/fasthtml/pyproject.toml.hbs", `[project]
+name = "{{projectName}}"
+version = "0.1.0"
+description = "A FastHTML app scaffolded with Better-T-Stack"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "python-fasthtml>=0.6",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "httpx>=0.27",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+`],
+  ["python/fasthtml/README.md.hbs", `# {{projectName}}
+
+A [FastHTML](https://fastht.ml) app scaffolded with [Better-T-Stack](https://better-t-stack.dev).
+
+With FastHTML the UI *is* the server — one process renders the HTML and runs your Python.
+
+## Getting started
+
+Install dependencies and create the virtual environment with [uv](https://docs.astral.sh/uv/):
+
+\`\`\`sh
+uv sync
+\`\`\`
+
+Run the app:
+
+\`\`\`sh
+uv run python app.py
+\`\`\`
+
+The app is then available at http://localhost:5001.
+
+Run the test suite:
+
+\`\`\`sh
+uv run pytest
+\`\`\`
+`],
+  ["python/fasthtml/tests/test_app.py.hbs", `from starlette.testclient import TestClient
+
+from app import app
+
+client = TestClient(app)
+
+
+def test_index_ok() -> None:
+    response = client.get("/")
+    assert response.status_code == 200
+
+
+def test_index_renders_the_project_title() -> None:
+    response = client.get("/")
+    assert "{{projectName}}" in response.text
+`],
+  ["python/gradio/_gitignore", `# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Virtual environments
+.venv/
+.env
+
+# uv
+.uv/
+
+# Gradio
+.gradio/
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+`],
+  ["python/gradio/app.py.hbs", `import gradio as gr
+
+
+def greet(name: str) -> str:
+    return f"Hello {name}! Welcome to {{projectName}}."
+
+
+demo = gr.Interface(
+    fn=greet,
+    inputs=gr.Textbox(label="Name", value="world"),
+    outputs=gr.Textbox(label="Greeting"),
+    title="{{projectName}}",
+)
+
+if __name__ == "__main__":
+    demo.launch()
+`],
+  ["python/gradio/pyproject.toml.hbs", `[project]
+name = "{{projectName}}"
+version = "0.1.0"
+description = "A Gradio app scaffolded with Better-T-Stack"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "gradio>=5",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+`],
+  ["python/gradio/README.md.hbs", `# {{projectName}}
+
+A [Gradio](https://www.gradio.app) app scaffolded with [Better-T-Stack](https://better-t-stack.dev).
+
+With Gradio the UI *is* the server — one process serves the interface and runs your Python.
+
+## Getting started
+
+Install dependencies and create the virtual environment with [uv](https://docs.astral.sh/uv/):
+
+\`\`\`sh
+uv sync
+\`\`\`
+
+Run the app:
+
+\`\`\`sh
+uv run python app.py
+\`\`\`
+
+The app is then available at http://localhost:7860.
+
+Run the test suite:
+
+\`\`\`sh
+uv run pytest
+\`\`\`
+`],
+  ["python/gradio/tests/test_app.py.hbs", `import gradio as gr
+
+from app import demo, greet
+
+
+def test_greet_returns_a_greeting() -> None:
+    assert greet("Ada") == "Hello Ada! Welcome to {{projectName}}."
+
+
+def test_demo_is_a_gradio_app() -> None:
+    assert isinstance(demo, gr.Blocks)
+`],
   ["python/library/_gitignore", `# Python
 __pycache__/
 *.py[cod]
@@ -31210,7 +31408,92 @@ uv run pytest
 
 def test_version() -> None:
     assert __version__ == "0.1.0"
+`],
+  ["python/streamlit/_gitignore", `# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Virtual environments
+.venv/
+.env
+
+# uv
+.uv/
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+`],
+  ["python/streamlit/app.py.hbs", `import streamlit as st
+
+st.title("{{projectName}}")
+st.write("Welcome to your Streamlit app, scaffolded with Better-T-Stack.")
+
+name = st.text_input("What is your name?", value="world")
+st.write(f"Hello, {name}!")
+`],
+  ["python/streamlit/pyproject.toml.hbs", `[project]
+name = "{{projectName}}"
+version = "0.1.0"
+description = "A Streamlit app scaffolded with Better-T-Stack"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "streamlit>=1.40",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+`],
+  ["python/streamlit/README.md.hbs", `# {{projectName}}
+
+A [Streamlit](https://streamlit.io) app scaffolded with [Better-T-Stack](https://better-t-stack.dev).
+
+With Streamlit the UI *is* the server — one process renders the interface and runs your Python.
+
+## Getting started
+
+Install dependencies and create the virtual environment with [uv](https://docs.astral.sh/uv/):
+
+\`\`\`sh
+uv sync
+\`\`\`
+
+Run the app:
+
+\`\`\`sh
+uv run streamlit run app.py
+\`\`\`
+
+The app is then available at http://localhost:8501.
+
+Run the test suite:
+
+\`\`\`sh
+uv run pytest
+\`\`\`
+`],
+  ["python/streamlit/tests/test_app.py.hbs", `from streamlit.testing.v1 import AppTest
+
+
+def test_app_renders_without_error() -> None:
+    at = AppTest.from_file("app.py").run()
+    assert not at.exception
+
+
+def test_app_shows_the_project_title() -> None:
+    at = AppTest.from_file("app.py").run()
+    assert at.title[0].value == "{{projectName}}"
 `]
 ]);
 
-export const TEMPLATE_COUNT = 484;
+export const TEMPLATE_COUNT = 499;

@@ -33,6 +33,20 @@ export function processPythonTemplates(
     return;
   }
 
+  // Python-native fullstack shapes (Slice 04): the UI *is* the server, mapping
+  // onto the TS `self` (fullstack) concept — one runnable process that is both
+  // UI and server. Each is a flat-root single app (templates routed to `.`),
+  // exactly like `fastapi`; the separate-backend question is already suppressed
+  // for any python ecosystem upstream (the ecosystem gate in the prompt flow).
+  if (
+    config.pythonApp === "streamlit" ||
+    config.pythonApp === "gradio" ||
+    config.pythonApp === "fasthtml"
+  ) {
+    processTemplatesFromPrefix(vfs, templates, `python/${config.pythonApp}`, "", config);
+    return;
+  }
+
   throw new GeneratorError({
     message: `Python app shape "${config.pythonApp}" is not yet implemented.`,
     phase: "python",

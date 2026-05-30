@@ -53,12 +53,17 @@ export function buildPythonNextSteps(config: ProjectConfig & { depsInstalled: bo
     lines.push(`${pc.cyan(`${step++}.`)} uv sync`);
   }
 
-  const runHint =
-    pythonApp === "library"
-      ? "uv run pytest"
-      : pythonApp === "fastapi"
-        ? "uv run fastapi dev main.py"
-        : "uv run python -m <your_module>";
+  // Each shape's idiomatic launch command. The python-native fullstack shapes
+  // (Slice 04) are one runnable process where the UI is the server: streamlit
+  // has its own runner, while gradio and fasthtml are launched as plain scripts.
+  const runHints: Partial<Record<NonNullable<typeof pythonApp>, string>> = {
+    library: "uv run pytest",
+    fastapi: "uv run fastapi dev main.py",
+    streamlit: "uv run streamlit run app.py",
+    gradio: "uv run python app.py",
+    fasthtml: "uv run python app.py",
+  };
+  const runHint = (pythonApp && runHints[pythonApp]) ?? "uv run python -m <your_module>";
   lines.push(`${pc.cyan(`${step++}.`)} ${runHint}`);
 
   return lines.join("\n");

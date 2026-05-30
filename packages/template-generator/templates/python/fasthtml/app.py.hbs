@@ -1,0 +1,15 @@
+from fasthtml.common import H1, P, Titled, fast_app, serve
+
+app, rt = fast_app()
+
+
+@rt("/")
+def get():
+    return Titled(
+        "{{projectName}}",
+        H1("{{projectName}}"),
+        P("Welcome to your FastHTML app, scaffolded with Better-T-Stack."),
+    )
+
+
+serve()

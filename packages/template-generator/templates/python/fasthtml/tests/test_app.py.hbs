@@ -1,0 +1,15 @@
+from starlette.testclient import TestClient
+
+from app import app
+
+client = TestClient(app)
+
+
+def test_index_ok() -> None:
+    response = client.get("/")
+    assert response.status_code == 200
+
+
+def test_index_renders_the_project_title() -> None:
+    response = client.get("/")
+    assert "{{projectName}}" in response.text

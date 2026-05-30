@@ -1,0 +1,16 @@
+import gradio as gr
+
+
+def greet(name: str) -> str:
+    return f"Hello {name}! Welcome to {{projectName}}."
+
+
+demo = gr.Interface(
+    fn=greet,
+    inputs=gr.Textbox(label="Name", value="world"),
+    outputs=gr.Textbox(label="Greeting"),
+    title="{{projectName}}",
+)
+
+if __name__ == "__main__":
+    demo.launch()

@@ -1,0 +1,11 @@
+import gradio as gr
+
+from app import demo, greet
+
+
+def test_greet_returns_a_greeting() -> None:
+    assert greet("Ada") == "Hello Ada! Welcome to {{projectName}}."
+
+
+def test_demo_is_a_gradio_app() -> None:
+    assert isinstance(demo, gr.Blocks)
