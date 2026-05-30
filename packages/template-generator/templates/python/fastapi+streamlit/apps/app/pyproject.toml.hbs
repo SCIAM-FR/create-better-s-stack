@@ -1,0 +1,22 @@
+[project]
+name = "{{projectName}}-app"
+version = "0.1.0"
+description = "Streamlit UI for {{projectName}}"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "streamlit>=1.40",
+]
+
+# A workspace member is an installable package so a single root `uv sync`
+# builds it and pulls its dependencies into the shared environment. The flat
+# `app.py` entrypoint is packaged as a top-level module.
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+include = ["app.py"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

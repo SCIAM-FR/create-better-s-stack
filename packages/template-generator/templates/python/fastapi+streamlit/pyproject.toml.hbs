@@ -1,0 +1,26 @@
+[project]
+name = "{{projectName}}"
+version = "0.1.0"
+description = "A FastAPI + Streamlit uv workspace scaffolded with Better-T-Stack"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "{{projectName}}-api",
+    "{{projectName}}-app",
+]
+
+# Capability-pack extras aggregate here so `uv sync --extra <pack>` resolves
+# from the workspace root (ml / genai / agents land in later slices).
+[project.optional-dependencies]
+
+[tool.uv.workspace]
+members = ["apps/*"]
+
+[tool.uv.sources]
+"{{projectName}}-api" = { workspace = true }
+"{{projectName}}-app" = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+]

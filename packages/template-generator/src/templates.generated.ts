@@ -31153,6 +31153,141 @@ def test_health_ok() -> None:
     response = client.get("/health")
     assert response.status_code == 200
 `],
+  ["python/fastapi+streamlit/_gitignore", `# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Virtual environments
+.venv/
+.env
+
+# uv
+.uv/
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+`],
+  ["python/fastapi+streamlit/apps/api/pyproject.toml.hbs", `[project]
+name = "{{projectName}}-api"
+version = "0.1.0"
+description = "FastAPI service for {{projectName}}"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi[standard]>=0.115",
+]
+
+# A workspace member is an installable package so a single root \`uv sync\`
+# builds it and pulls its dependencies into the shared environment. The flat
+# \`main.py\` entrypoint is packaged as a top-level module.
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+include = ["main.py"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+`],
+  ["python/fastapi+streamlit/apps/app/pyproject.toml.hbs", `[project]
+name = "{{projectName}}-app"
+version = "0.1.0"
+description = "Streamlit UI for {{projectName}}"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "streamlit>=1.40",
+]
+
+# A workspace member is an installable package so a single root \`uv sync\`
+# builds it and pulls its dependencies into the shared environment. The flat
+# \`app.py\` entrypoint is packaged as a top-level module.
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+include = ["app.py"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+`],
+  ["python/fastapi+streamlit/pyproject.toml.hbs", `[project]
+name = "{{projectName}}"
+version = "0.1.0"
+description = "A FastAPI + Streamlit uv workspace scaffolded with Better-T-Stack"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "{{projectName}}-api",
+    "{{projectName}}-app",
+]
+
+# Capability-pack extras aggregate here so \`uv sync --extra <pack>\` resolves
+# from the workspace root (ml / genai / agents land in later slices).
+[project.optional-dependencies]
+
+[tool.uv.workspace]
+members = ["apps/*"]
+
+[tool.uv.sources]
+"{{projectName}}-api" = { workspace = true }
+"{{projectName}}-app" = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+]
+`],
+  ["python/fastapi+streamlit/README.md.hbs", `# {{projectName}}
+
+A [FastAPI](https://fastapi.tiangolo.com) + [Streamlit](https://streamlit.io) [uv workspace](https://docs.astral.sh/uv/concepts/projects/workspaces/) scaffolded with [Better-T-Stack](https://better-t-stack.dev).
+
+Two apps, one shared environment and lockfile:
+
+- \`apps/api\` — the FastAPI service
+- \`apps/app\` — the Streamlit UI
+
+## Getting started
+
+Install everything from the workspace root with [uv](https://docs.astral.sh/uv/) — a single \`uv sync\` builds both members and resolves one root \`uv.lock\`:
+
+\`\`\`sh
+uv sync
+\`\`\`
+
+Run the API:
+
+\`\`\`sh
+uv run fastapi dev apps/api/main.py
+\`\`\`
+
+The API is then available at http://localhost:8000 (interactive docs at \`/docs\`).
+
+In another terminal, run the UI:
+
+\`\`\`sh
+uv run streamlit run apps/app/app.py
+\`\`\`
+
+The UI is then available at http://localhost:8501.
+
+## Tests
+
+Run each member's tests from its own directory (the shared workspace
+environment is reused), so the Streamlit app's \`AppTest\` resolves \`app.py\`:
+
+\`\`\`sh
+uv run --directory apps/api pytest
+uv run --directory apps/app pytest
+\`\`\`
+`],
   ["python/fasthtml/_gitignore", `# Python
 __pycache__/
 *.py[cod]
@@ -31496,4 +31631,4 @@ def test_app_shows_the_project_title() -> None:
 `]
 ]);
 
-export const TEMPLATE_COUNT = 499;
+export const TEMPLATE_COUNT = 504;

@@ -47,6 +47,20 @@ export function processPythonTemplates(
     return;
   }
 
+  if (config.pythonApp === "fastapi+streamlit") {
+    // Two-app uv workspace (plan §261): a FastAPI API in apps/api and a
+    // Streamlit UI in apps/app, reusing the single-app code from the fastapi
+    // and streamlit prefixes. The workspace tree is laid down last so its root
+    // pyproject (members = ["apps/*"]) is added and each member's pyproject is
+    // overridden with a workspace-member variant — members need distinct,
+    // installable package names so one root `uv sync` builds and installs both
+    // apps into a single shared environment with one root lock.
+    processTemplatesFromPrefix(vfs, templates, "python/fastapi", "apps/api", config);
+    processTemplatesFromPrefix(vfs, templates, "python/streamlit", "apps/app", config);
+    processTemplatesFromPrefix(vfs, templates, "python/fastapi+streamlit", "", config);
+    return;
+  }
+
   throw new GeneratorError({
     message: `Python app shape "${config.pythonApp}" is not yet implemented.`,
     phase: "python",
