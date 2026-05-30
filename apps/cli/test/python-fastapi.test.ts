@@ -72,9 +72,7 @@ describe("python fastapi generation", () => {
 
   it("emits a tests directory that exercises the app via TestClient", async () => {
     const files = await fastapiFiles();
-    const testPath = [...files.keys()].find(
-      (p) => p.startsWith("tests/") && p.endsWith(".py"),
-    );
+    const testPath = [...files.keys()].find((p) => p.startsWith("tests/") && p.endsWith(".py"));
     expect(testPath).toBeDefined();
     const content = files.get(testPath ?? "") ?? "";
     expect(content).toContain("from fastapi.testclient import TestClient");
