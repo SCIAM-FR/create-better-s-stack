@@ -10,6 +10,8 @@ import {
 import { DEFAULT_CONFIG } from "../src/constants";
 import { createVirtual } from "../src/index";
 import { gatherConfig } from "../src/prompts/config-prompts";
+import type { CLIInput } from "../src/types";
+import { processFlags } from "../src/utils/config-processing";
 import { runWithContextAsync } from "../src/utils/context";
 
 describe("ecosystem discriminator skeleton", () => {
@@ -76,6 +78,37 @@ describe("Project Configuration field plumbing", () => {
 
   const btsShape = BetterTStackConfigSchema.shape as Record<string, unknown>;
 
+  // A maximal flag set (every array non-empty) run through the flag→config
+  // builder. This guards the surface that originally dropped the python fields:
+  // processFlags only copies *provided* options, so every stack field set as a
+  // flag must survive into the config it returns.
+  const maximalFlags = {
+    ecosystem: "python",
+    frontend: ["tanstack-router"],
+    backend: "hono",
+    runtime: "bun",
+    database: "sqlite",
+    orm: "drizzle",
+    api: "trpc",
+    auth: "better-auth",
+    payments: "polar",
+    addons: ["turborepo"],
+    examples: ["todo"],
+    dbSetup: "turso",
+    packageManager: "uv",
+    webDeploy: "cloudflare",
+    serverDeploy: "cloudflare",
+    pythonApp: "fastapi",
+    pythonOrm: "sqlalchemy",
+    pythonMl: ["pytorch"],
+    pythonGenai: ["anthropic"],
+    pythonAgents: ["langgraph"],
+    accelerator: "cu124",
+    pythonStarter: true,
+    // biome-ignore lint/suspicious/noExplicitAny: a maximal, intentionally cross-ecosystem flag bag
+  } as any as CLIInput;
+  const flagConfig = processFlags(maximalFlags, "plumbing-check") as Record<string, unknown>;
+
   const expectedFlag = (key: string) => `--${key.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`)}`;
 
   it("has at least the known TS stack fields under guard", () => {
@@ -101,6 +134,10 @@ describe("Project Configuration field plumbing", () => {
 
       it("is echoed in the reproducible command", () => {
         expect(reproducibleCommand).toContain(expectedFlag(key));
+      });
+
+      it("is copied by processFlags when provided as a flag", () => {
+        expect(Object.hasOwn(flagConfig, key)).toBe(true);
       });
     });
   }

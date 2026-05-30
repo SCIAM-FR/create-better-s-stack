@@ -220,6 +220,7 @@ async function addHandlerInternal(
     projectName: existingConfig.projectName,
     projectDir,
     relativePath: ".",
+    ecosystem: existingConfig.ecosystem,
     addonOptions: mergedAddonOptions,
     database: existingConfig.database,
     orm: existingConfig.orm,
@@ -237,6 +238,13 @@ async function addHandlerInternal(
     api: existingConfig.api,
     webDeploy: existingConfig.webDeploy,
     serverDeploy: existingConfig.serverDeploy,
+    pythonApp: existingConfig.pythonApp,
+    pythonOrm: existingConfig.pythonOrm,
+    pythonMl: existingConfig.pythonMl,
+    pythonGenai: existingConfig.pythonGenai,
+    pythonAgents: existingConfig.pythonAgents,
+    accelerator: existingConfig.accelerator,
+    pythonStarter: existingConfig.pythonStarter,
   };
 
   // Create VFS and process addon templates using template-generator's logic

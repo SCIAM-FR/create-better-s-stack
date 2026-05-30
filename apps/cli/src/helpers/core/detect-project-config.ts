@@ -13,6 +13,7 @@ export async function detectProjectConfig(projectDir: string) {
         return {
           projectDir,
           projectName: path.basename(projectDir),
+          ecosystem: btsConfig.ecosystem,
           addonOptions: btsConfig.addonOptions,
           dbSetupOptions: btsConfig.dbSetupOptions,
           database: btsConfig.database,
@@ -29,6 +30,13 @@ export async function detectProjectConfig(projectDir: string) {
           api: btsConfig.api,
           webDeploy: btsConfig.webDeploy,
           serverDeploy: btsConfig.serverDeploy,
+          pythonApp: btsConfig.pythonApp,
+          pythonOrm: btsConfig.pythonOrm,
+          pythonMl: btsConfig.pythonMl,
+          pythonGenai: btsConfig.pythonGenai,
+          pythonAgents: btsConfig.pythonAgents,
+          accelerator: btsConfig.accelerator,
+          pythonStarter: btsConfig.pythonStarter,
         };
       }
 

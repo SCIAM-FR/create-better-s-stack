@@ -136,23 +136,26 @@ export async function gatherConfig(
       // Each TS-stack prompt is gated on the python ecosystem: under python it
       // returns the shared inert projection (no UI), so the interactive python
       // flow never asks TS questions (plan §3.3 / Decision 5).
-      frontend: ({ results }) =>
+      // Gated callbacks are `async` so the python branch (a synchronous inert
+      // default) is wrapped in a Promise: navigableGroup calls `prompt(...)?.catch`
+      // on the return, so a bare value would both fail the type and crash at runtime.
+      frontend: async ({ results }) =>
         results.ecosystem === "python"
           ? [...PYTHON_TS_FIELD_DEFAULTS.frontend]
           : getFrontendChoice(flags.frontend, flags.backend, flags.auth),
-      backend: ({ results }) =>
+      backend: async ({ results }) =>
         results.ecosystem === "python"
           ? PYTHON_TS_FIELD_DEFAULTS.backend
           : getBackendFrameworkChoice(flags.backend, results.frontend),
-      runtime: ({ results }) =>
+      runtime: async ({ results }) =>
         results.ecosystem === "python"
           ? PYTHON_TS_FIELD_DEFAULTS.runtime
           : getRuntimeChoice(flags.runtime, results.backend),
-      database: ({ results }) =>
+      database: async ({ results }) =>
         results.ecosystem === "python"
           ? "none"
           : getDatabaseChoice(flags.database, results.backend, results.runtime),
-      orm: ({ results }) =>
+      orm: async ({ results }) =>
         results.ecosystem === "python"
           ? PYTHON_TS_FIELD_DEFAULTS.orm
           : getORMChoice(
@@ -162,19 +165,19 @@ export async function gatherConfig(
               results.backend,
               results.runtime,
             ),
-      api: ({ results }) =>
+      api: async ({ results }) =>
         results.ecosystem === "python"
           ? PYTHON_TS_FIELD_DEFAULTS.api
           : (getApiChoice(flags.api, results.frontend, results.backend) as Promise<API>),
-      auth: ({ results }) =>
+      auth: async ({ results }) =>
         results.ecosystem === "python"
           ? PYTHON_TS_FIELD_DEFAULTS.auth
           : getAuthChoice(flags.auth, results.backend, results.frontend),
-      payments: ({ results }) =>
+      payments: async ({ results }) =>
         results.ecosystem === "python"
           ? PYTHON_TS_FIELD_DEFAULTS.payments
           : getPaymentsChoice(flags.payments, results.auth, results.backend, results.frontend),
-      addons: ({ results }) =>
+      addons: async ({ results }) =>
         results.ecosystem === "python"
           ? [...PYTHON_TS_FIELD_DEFAULTS.addons]
           : getAddonsChoice(
@@ -184,7 +187,7 @@ export async function gatherConfig(
               results.backend,
               results.runtime,
             ),
-      examples: ({ results }) =>
+      examples: async ({ results }) =>
         results.ecosystem === "python"
           ? [...PYTHON_TS_FIELD_DEFAULTS.examples]
           : (getExamplesChoice(
@@ -194,7 +197,7 @@ export async function gatherConfig(
               results.backend,
               results.api,
             ) as Promise<Examples[]>),
-      dbSetup: ({ results }) =>
+      dbSetup: async ({ results }) =>
         results.ecosystem === "python"
           ? PYTHON_TS_FIELD_DEFAULTS.dbSetup
           : getDBSetupChoice(
@@ -204,7 +207,7 @@ export async function gatherConfig(
               results.backend,
               results.runtime,
             ),
-      webDeploy: ({ results }) =>
+      webDeploy: async ({ results }) =>
         results.ecosystem === "python"
           ? PYTHON_TS_FIELD_DEFAULTS.webDeploy
           : getDeploymentChoice(
@@ -214,7 +217,7 @@ export async function gatherConfig(
               results.frontend,
               results.dbSetup,
             ),
-      serverDeploy: ({ results }) =>
+      serverDeploy: async ({ results }) =>
         results.ecosystem === "python"
           ? PYTHON_TS_FIELD_DEFAULTS.serverDeploy
           : getServerDeploymentChoice(
@@ -224,19 +227,25 @@ export async function gatherConfig(
               results.webDeploy,
             ),
       git: () => getGitChoice(flags.git),
-      packageManager: ({ results }) =>
+      packageManager: async ({ results }) =>
         results.ecosystem === "python"
           ? PYTHON_TS_FIELD_DEFAULTS.packageManager
           : getPackageManagerChoice(flags.packageManager),
       install: () => getinstallChoice(flags.install),
-      pythonApp: ({ results }) => getPythonAppChoice(results.ecosystem, flags.pythonApp),
-      pythonOrm: ({ results }) => getPythonOrmChoice(results.ecosystem, flags.pythonOrm),
-      pythonMl: ({ results }) => getPythonMlChoice(results.ecosystem, flags.pythonMl),
-      pythonGenai: ({ results }) => getPythonGenaiChoice(results.ecosystem, flags.pythonGenai),
-      pythonAgents: ({ results }) => getPythonAgentsChoice(results.ecosystem, flags.pythonAgents),
-      accelerator: ({ results }) => getAcceleratorChoice(results.ecosystem, flags.accelerator),
+      // The discriminator is resolved first, so `results.ecosystem` is always set
+      // by the time these run; `?? "ts"` is a type-level guard against the partial
+      // results type (a `ts` ecosystem makes each python prompt return its default).
+      pythonApp: ({ results }) => getPythonAppChoice(results.ecosystem ?? "ts", flags.pythonApp),
+      pythonOrm: ({ results }) => getPythonOrmChoice(results.ecosystem ?? "ts", flags.pythonOrm),
+      pythonMl: ({ results }) => getPythonMlChoice(results.ecosystem ?? "ts", flags.pythonMl),
+      pythonGenai: ({ results }) =>
+        getPythonGenaiChoice(results.ecosystem ?? "ts", flags.pythonGenai),
+      pythonAgents: ({ results }) =>
+        getPythonAgentsChoice(results.ecosystem ?? "ts", flags.pythonAgents),
+      accelerator: ({ results }) =>
+        getAcceleratorChoice(results.ecosystem ?? "ts", flags.accelerator),
       pythonStarter: ({ results }) =>
-        getPythonStarterChoice(results.ecosystem, flags.pythonStarter),
+        getPythonStarterChoice(results.ecosystem ?? "ts", flags.pythonStarter),
     },
     {
       onCancel: () => {
