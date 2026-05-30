@@ -81,8 +81,10 @@ export async function createProject(
       ),
     );
 
-    // Set package manager version
-    yield* Result.await(setPackageManagerVersion(projectDir, options.packageManager));
+    // Set package manager version (JS package managers only; uv is not corepack-managed)
+    if (options.ecosystem !== "python") {
+      yield* Result.await(setPackageManagerVersion(projectDir, options.packageManager));
+    }
 
     // Setup database if needed
     if (!isConvex && options.database !== "none") {
@@ -114,8 +116,10 @@ export async function createProject(
       );
     }
 
-    // Format project
-    yield* Result.await(formatProject(projectDir));
+    // Format project (TS toolchain; python projects format via their own tooling)
+    if (options.ecosystem !== "python") {
+      yield* Result.await(formatProject(projectDir));
+    }
 
     if (!isSilent()) log.success("Project template successfully scaffolded!");
 
@@ -125,6 +129,7 @@ export async function createProject(
         installDependencies({
           projectDir,
           packageManager: options.packageManager,
+          ecosystem: options.ecosystem,
         }),
       );
     }

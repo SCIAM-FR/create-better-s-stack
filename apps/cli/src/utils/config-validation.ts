@@ -220,6 +220,57 @@ export function validateDatabaseSetup(
   return Result.ok(undefined);
 }
 
+/**
+ * Python ecosystem constraints (plan §2.2 / Decision 6). This *replaces* the TS
+ * none/convex/self cascade for python configs — it is invoked via a single
+ * early-return at the top of both validation entry points, so the TS validators
+ * never run for python. It validates the resolved config values directly
+ * (python configs are fully projected at construction), rejecting any TS-only
+ * choice the user explicitly forced. Heavy-GenAI / accelerator rules arrive with
+ * the capability packs (Slice 08).
+ */
+export function validatePythonConstraints(config: Partial<ProjectConfig>): ValidationResult {
+  if (config.ecosystem !== "python") {
+    return Result.ok(undefined);
+  }
+
+  if (config.packageManager && config.packageManager !== "uv") {
+    return validationErr("Python ecosystem requires '--package-manager uv'.");
+  }
+
+  if (config.backend && config.backend !== "none") {
+    return validationErr(
+      "Python ecosystem requires '--backend none'. Python app shapes are selected with '--python-app'.",
+    );
+  }
+
+  if (config.runtime && config.runtime !== "none") {
+    return validationErr("Python ecosystem requires '--runtime none'.");
+  }
+
+  if (config.api && config.api !== "none") {
+    return validationErr("Python ecosystem requires '--api none'.");
+  }
+
+  if (config.orm && config.orm !== "none") {
+    return validationErr(
+      "Python ecosystem requires the TypeScript '--orm none'. Use '--python-orm' to choose a Python ORM.",
+    );
+  }
+
+  if (config.database === "mongodb") {
+    return validationErr(
+      "Python ecosystem does not support MongoDB in v1. Choose a SQL database or '--database none'.",
+    );
+  }
+
+  if (config.dbSetup && config.dbSetup !== "none") {
+    return validationErr("Python ecosystem requires '--db-setup none' in v1.");
+  }
+
+  return Result.ok(undefined);
+}
+
 export function validateConvexConstraints(
   config: Partial<ProjectConfig>,
   providedFlags: Set<string>,
@@ -485,6 +536,11 @@ export function validateFullConfig(
   providedFlags: Set<string>,
   options: CLIInput,
 ): ValidationResult {
+  // Python validation replaces the TS cascade entirely (plan §2.2 / Decision 6).
+  if (config.ecosystem === "python") {
+    return validatePythonConstraints(config);
+  }
+
   return Result.gen(function* () {
     yield* validateDatabaseOrmAuth(config, providedFlags);
     yield* validateDatabaseSetup(config, providedFlags);
@@ -550,6 +606,11 @@ export function validateFullConfig(
 }
 
 export function validateConfigForProgrammaticUse(config: Partial<ProjectConfig>): ValidationResult {
+  // Python validation replaces the TS cascade entirely (plan §2.2 / Decision 6).
+  if (config.ecosystem === "python") {
+    return validatePythonConstraints(config);
+  }
+
   return Result.gen(function* () {
     yield* validateDatabaseOrmAuth(config);
 

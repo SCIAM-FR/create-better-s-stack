@@ -40,9 +40,33 @@ function getDesktopStaticBuildNote(frontend: Frontend[]): string {
   )} needs a static/export web build before desktop packaging will work.`;
 }
 
+/**
+ * Python next-steps box (plan §8): uv-based commands instead of npm/pnpm/bun.
+ * Pure so it can be unit-tested without rendering.
+ */
+export function buildPythonNextSteps(config: ProjectConfig & { depsInstalled: boolean }): string {
+  const { relativePath, depsInstalled, pythonApp } = config;
+  const lines = [`${pc.bold("Next steps")}`, `${pc.cyan("1.")} cd ${relativePath}`];
+  let step = 2;
+
+  if (!depsInstalled) {
+    lines.push(`${pc.cyan(`${step++}.`)} uv sync`);
+  }
+
+  const runHint = pythonApp === "library" ? "uv run pytest" : "uv run python -m <your_module>";
+  lines.push(`${pc.cyan(`${step++}.`)} ${runHint}`);
+
+  return lines.join("\n");
+}
+
 export async function displayPostInstallInstructions(
   config: ProjectConfig & { depsInstalled: boolean },
 ) {
+  if (config.ecosystem === "python") {
+    cliConsola.box(buildPythonNextSteps(config));
+    return;
+  }
+
   const {
     api,
     database,

@@ -27,6 +27,7 @@ import {
   processExampleTemplates,
   processExtrasTemplates,
   processDeployTemplates,
+  processPythonTemplates,
 } from "./template-handlers";
 import type { GeneratorOptions, VirtualFileTree } from "./types";
 import { GeneratorError } from "./types";
@@ -62,6 +63,26 @@ export async function generate(
       }
 
       const vfs = new VirtualFileSystem();
+
+      // Single ecosystem seam (plan §7 / Decision 3): the python pipeline branches
+      // here, before any TS handler/processor runs, so the TS path stays
+      // byte-identical by construction. None of the JS-oriented post-template
+      // processors run for python.
+      if (config.ecosystem === "python") {
+        processPythonTemplates(vfs, templates, config);
+
+        if (options.version) {
+          const reproducibleCommand = generateReproducibleCommand(config);
+          writeBtsConfigToVfs(vfs, config, options.version, reproducibleCommand);
+        }
+
+        return {
+          root: vfs.toTree(config.projectName),
+          fileCount: vfs.getFileCount(),
+          directoryCount: vfs.getDirectoryCount(),
+          config,
+        };
+      }
 
       await processBaseTemplate(vfs, templates, config);
       await processFrontendTemplates(vfs, templates, config);

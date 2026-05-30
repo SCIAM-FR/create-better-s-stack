@@ -1,6 +1,13 @@
 import type { z } from "zod";
 
 import type {
+  EcosystemSchema,
+  PythonAppSchema,
+  PythonOrmSchema,
+  AcceleratorSchema,
+  PythonMlSchema,
+  PythonGenaiSchema,
+  PythonAgentsSchema,
   DatabaseSchema,
   ORMSchema,
   BackendSchema,
@@ -29,6 +36,13 @@ import type {
 } from "./schemas";
 
 // Inferred types from Zod schemas
+export type Ecosystem = z.infer<typeof EcosystemSchema>;
+export type PythonApp = z.infer<typeof PythonAppSchema>;
+export type PythonOrm = z.infer<typeof PythonOrmSchema>;
+export type Accelerator = z.infer<typeof AcceleratorSchema>;
+export type PythonMl = z.infer<typeof PythonMlSchema>;
+export type PythonGenai = z.infer<typeof PythonGenaiSchema>;
+export type PythonAgents = z.infer<typeof PythonAgentsSchema>;
 export type Database = z.infer<typeof DatabaseSchema>;
 export type ORM = z.infer<typeof ORMSchema>;
 export type Backend = z.infer<typeof BackendSchema>;

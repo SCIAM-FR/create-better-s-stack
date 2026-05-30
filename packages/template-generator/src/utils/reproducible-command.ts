@@ -56,6 +56,21 @@ export function generateReproducibleCommand(config: ProjectConfig): string {
   flags.push(`--package-manager ${config.packageManager}`);
   flags.push(config.install ? "--install" : "--no-install");
 
+  // Python ecosystem flags — additive; emitted only for python configs so the
+  // TS path stays byte-identical (plan §7 / Decision 3).
+  if (config.ecosystem === "python") {
+    flags.push(`--ecosystem ${config.ecosystem}`);
+    flags.push(`--python-app ${config.pythonApp}`);
+    flags.push(`--python-orm ${config.pythonOrm}`);
+    flags.push(formatMultiFlag("--python-ml", normalizeMultiValues(config.pythonMl)));
+    flags.push(formatMultiFlag("--python-genai", normalizeMultiValues(config.pythonGenai)));
+    flags.push(formatMultiFlag("--python-agents", normalizeMultiValues(config.pythonAgents)));
+    flags.push(`--accelerator ${config.accelerator}`);
+    if (config.pythonStarter) {
+      flags.push("--python-starter");
+    }
+  }
+
   const projectPathArg = config.relativePath ? ` ${config.relativePath}` : "";
 
   return `${baseCommand}${projectPathArg} ${flags.join(" ")}`;

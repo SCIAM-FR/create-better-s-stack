@@ -31058,7 +31058,65 @@ function SuccessPage() {
 		<p>Checkout ID: {checkout_id}</p>
 	{/if}
 </div>
+`],
+  ["python/library/_gitignore", `# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Virtual environments
+.venv/
+.env
+
+# uv
+.uv/
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+`],
+  ["python/library/pyproject.toml.hbs", `[project]
+name = "{{projectName}}"
+version = "0.1.0"
+description = "A Python project scaffolded with Better-T-Stack"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/{{pyPackage projectName}}"]
+`],
+  ["python/library/README.md.hbs", `# {{projectName}}
+
+A Python library scaffolded with [Better-T-Stack](https://better-t-stack.dev).
+
+## Getting started
+
+Install dependencies and create the virtual environment with [uv](https://docs.astral.sh/uv/):
+
+\`\`\`sh
+uv sync
+\`\`\`
+
+Run the test suite:
+
+\`\`\`sh
+uv run pytest
+\`\`\`
+`],
+  ["python/library/tests/test_smoke.py.hbs", `from {{pyPackage projectName}} import __version__
+
+
+def test_version() -> None:
+    assert __version__ == "0.1.0"
 `]
 ]);
 
-export const TEMPLATE_COUNT = 475;
+export const TEMPLATE_COUNT = 479;

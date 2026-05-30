@@ -1,5 +1,80 @@
 import { z } from "zod";
 
+const EcosystemEnum = z.enum(["ts", "python"]);
+export const EcosystemSchema = EcosystemEnum.default("ts").describe(
+  "Top-level project ecosystem discriminator",
+);
+
+// Python project "shape" — collapses frontend/backend the way `self` does for TS
+export const PythonAppSchema = z
+  .enum([
+    "library",
+    "fastapi",
+    "flask",
+    "django",
+    "streamlit",
+    "gradio",
+    "fasthtml",
+    "fastapi+streamlit",
+    "none",
+  ])
+  .describe("Python application shape");
+
+// Parallel Python ORM (the TS ORMSchema stays drizzle/prisma/mongoose/none)
+export const PythonOrmSchema = z
+  .enum(["none", "sqlalchemy", "sqlmodel", "tortoise"])
+  .describe("Python ORM");
+
+const AcceleratorEnum = z.enum(["cpu", "cu121", "cu124", "rocm"]);
+export const AcceleratorSchema = AcceleratorEnum.default("cpu").describe(
+  "Compute accelerator for torch-based Python packs",
+);
+
+// Capability packs — multi-select, modeled like addons/examples
+export const PythonMlSchema = z
+  .enum(["scikit-learn", "pytorch", "tensorflow", "jax", "xgboost", "lightgbm"])
+  .describe("Python ML capability pack");
+
+export const PythonGenaiSchema = z
+  .enum([
+    // heavy: self-host / train (own the torch graph, imply a GPU)
+    "transformers",
+    "vllm",
+    "unsloth",
+    "trl",
+    "peft",
+    "accelerate",
+    // light: hosted API clients
+    "openai",
+    "anthropic",
+    "google-genai",
+    "litellm",
+  ])
+  .describe("Python GenAI capability pack");
+
+export const PythonAgentsSchema = z
+  .enum([
+    "langgraph",
+    "openai-agents",
+    "claude-agent-sdk",
+    "pydantic-ai",
+    "llamaindex",
+    "crewai",
+    "autogen",
+  ])
+  .describe("Python agents capability pack");
+
+// The ONE array-level superRefine — mirrors AddonsListSchema's nx/turborepo check
+export const PythonGenaiListSchema = z.array(PythonGenaiSchema).superRefine((picks, ctx) => {
+  const heavy = picks.filter((x) => ["vllm", "unsloth", "trl"].includes(x));
+  if (heavy.length > 1) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: `Pick one of vllm/unsloth/trl (got ${heavy.join(", ")})`,
+    });
+  }
+});
+
 export const DatabaseSchema = z
   .enum(["none", "sqlite", "postgres", "mysql", "mongodb"])
   .describe("Database type");
@@ -67,7 +142,9 @@ export const ExamplesSchema = z
   .enum(["todo", "ai", "none"])
   .describe("Example templates to include");
 
-export const PackageManagerSchema = z.enum(["npm", "pnpm", "bun"]).describe("Package manager");
+export const PackageManagerSchema = z
+  .enum(["npm", "pnpm", "bun", "uv"])
+  .describe("Package manager");
 
 export const DatabaseSetupSchema = z
   .enum([
@@ -417,6 +494,14 @@ export const CreateInputSchema = z
   .object({
     projectName: z.string().optional(),
     template: TemplateSchema.optional(),
+    ecosystem: EcosystemEnum.optional(),
+    pythonApp: PythonAppSchema.optional(),
+    pythonOrm: PythonOrmSchema.optional(),
+    pythonMl: z.array(PythonMlSchema).optional(),
+    pythonGenai: PythonGenaiListSchema.optional(),
+    pythonAgents: z.array(PythonAgentsSchema).optional(),
+    accelerator: AcceleratorSchema.optional(),
+    pythonStarter: z.boolean().optional(),
     yes: z.boolean().optional(),
     yolo: z.boolean().optional(),
     dryRun: z.boolean().optional(),
@@ -471,6 +556,14 @@ export const ProjectConfigSchema = z.object({
   projectName: z.string(),
   projectDir: z.string(),
   relativePath: z.string(),
+  ecosystem: EcosystemSchema,
+  pythonApp: PythonAppSchema.default("none"),
+  pythonOrm: PythonOrmSchema.default("none"),
+  pythonMl: z.array(PythonMlSchema).default([]),
+  pythonGenai: PythonGenaiListSchema.default([]),
+  pythonAgents: z.array(PythonAgentsSchema).default([]),
+  accelerator: AcceleratorSchema,
+  pythonStarter: z.boolean().default(false),
   addonOptions: AddonOptionsSchema.optional(),
   dbSetupOptions: DbSetupOptionsSchema.optional(),
   database: DatabaseSchema,
@@ -495,6 +588,14 @@ export const BetterTStackConfigSchema = z.object({
   version: z.string().describe("CLI version used to create this project"),
   createdAt: z.string().describe("Timestamp when the project was created"),
   reproducibleCommand: z.string().optional().describe("Command to reproduce this project setup"),
+  ecosystem: EcosystemSchema,
+  pythonApp: PythonAppSchema.default("none"),
+  pythonOrm: PythonOrmSchema.default("none"),
+  pythonMl: z.array(PythonMlSchema).default([]),
+  pythonGenai: PythonGenaiListSchema.default([]),
+  pythonAgents: z.array(PythonAgentsSchema).default([]),
+  accelerator: AcceleratorSchema,
+  pythonStarter: z.boolean().default(false),
   addonOptions: AddonOptionsSchema.optional(),
   dbSetupOptions: DbSetupOptionsSchema.optional(),
   database: DatabaseSchema,
@@ -536,6 +637,13 @@ export const InitResultSchema = z.object({
   error: z.string().optional(),
 });
 
+export const ECOSYSTEM_VALUES = EcosystemEnum.options;
+export const PYTHON_APP_VALUES = PythonAppSchema.options;
+export const PYTHON_ORM_VALUES = PythonOrmSchema.options;
+export const ACCELERATOR_VALUES = AcceleratorEnum.options;
+export const PYTHON_ML_VALUES = PythonMlSchema.options;
+export const PYTHON_GENAI_VALUES = PythonGenaiSchema.options;
+export const PYTHON_AGENTS_VALUES = PythonAgentsSchema.options;
 export const DATABASE_VALUES = DatabaseSchema.options;
 export const ORM_VALUES = ORMSchema.options;
 export const BACKEND_VALUES = BackendSchema.options;

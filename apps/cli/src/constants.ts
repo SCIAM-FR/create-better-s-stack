@@ -2,6 +2,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { desktopWebFrontends } from "@better-t-stack/types";
+import type { Addons, Examples, Frontend } from "@better-t-stack/types";
 
 import { getUserPkgManager } from "./utils/get-package-manager";
 
@@ -18,6 +19,7 @@ export const PKG_ROOT = path.join(distPath, "../");
 export const DEFAULT_CONFIG_BASE = {
   projectName: "my-better-t-app",
   relativePath: "my-better-t-app",
+  ecosystem: "ts",
   frontend: ["tanstack-router"],
   database: "sqlite",
   orm: "drizzle",
@@ -33,6 +35,14 @@ export const DEFAULT_CONFIG_BASE = {
   api: "trpc",
   webDeploy: "none",
   serverDeploy: "none",
+  // Python ecosystem fields — inert under the default `ts` ecosystem
+  pythonApp: "none",
+  pythonOrm: "none",
+  pythonMl: [],
+  pythonGenai: [],
+  pythonAgents: [],
+  accelerator: "cpu",
+  pythonStarter: false,
 } as const;
 
 export function getDefaultConfig() {
@@ -43,10 +53,35 @@ export function getDefaultConfig() {
     frontend: [...DEFAULT_CONFIG_BASE.frontend],
     addons: [...DEFAULT_CONFIG_BASE.addons],
     examples: [...DEFAULT_CONFIG_BASE.examples],
+    pythonMl: [...DEFAULT_CONFIG_BASE.pythonMl],
+    pythonGenai: [...DEFAULT_CONFIG_BASE.pythonGenai],
+    pythonAgents: [...DEFAULT_CONFIG_BASE.pythonAgents],
   };
 }
 
 export const DEFAULT_CONFIG = getDefaultConfig();
+
+/**
+ * The single shared projection of TS-only stack fields to their inert values
+ * when `ecosystem === "python"`. Reused by both the silent config path and the
+ * gated TS prompts so the two can't drift (plan §3.3 / Decision 5).
+ * `database` is intentionally absent — a Python project may carry a real one.
+ */
+export const PYTHON_TS_FIELD_DEFAULTS = {
+  frontend: [] as Frontend[],
+  backend: "none",
+  api: "none",
+  orm: "none",
+  auth: "none",
+  payments: "none",
+  runtime: "none",
+  packageManager: "uv",
+  addons: [] as Addons[],
+  examples: [] as Examples[],
+  dbSetup: "none",
+  webDeploy: "none",
+  serverDeploy: "none",
+} as const;
 
 export { desktopWebFrontends };
 

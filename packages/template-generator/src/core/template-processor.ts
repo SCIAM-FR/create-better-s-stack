@@ -2,11 +2,27 @@ import type { ProjectConfig } from "@better-t-stack/types";
 import Handlebars from "handlebars";
 import isBinaryPath from "is-binary-path";
 
+/**
+ * Derive a valid Python package (module) name from a project name: lowercase,
+ * non-identifier chars to underscores, never leading with a digit.
+ */
+export function toPythonPackageName(name: string | undefined): string {
+  const base = (name ?? "app").split(/[\\/]/).pop() || "app";
+  let pkg = base
+    .toLowerCase()
+    .replace(/[^a-z0-9_]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+  if (!pkg) pkg = "app";
+  if (/^[0-9]/.test(pkg)) pkg = `pkg_${pkg}`;
+  return pkg;
+}
+
 Handlebars.registerHelper("eq", (a, b) => a === b);
 Handlebars.registerHelper("ne", (a, b) => a !== b);
 Handlebars.registerHelper("and", (...args) => args.slice(0, -1).every(Boolean));
 Handlebars.registerHelper("or", (...args) => args.slice(0, -1).some(Boolean));
 Handlebars.registerHelper("includes", (arr, val) => Array.isArray(arr) && arr.includes(val));
+Handlebars.registerHelper("pyPackage", (name) => toPythonPackageName(name));
 
 export function processTemplateString(content: string, context: ProjectConfig): string {
   return Handlebars.compile(content)(context);
