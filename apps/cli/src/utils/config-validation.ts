@@ -220,14 +220,18 @@ export function validateDatabaseSetup(
   return Result.ok(undefined);
 }
 
+// Heavy GenAI packs own the torch dependency graph and imply a GPU; they are
+// incompatible with a cpu accelerator and with the Cloudflare (no-GPU) target.
+const HEAVY_GENAI_PACKS = ["transformers", "vllm", "unsloth", "trl", "peft", "accelerate"] as const;
+
 /**
  * Python ecosystem constraints (plan §2.2 / Decision 6). This *replaces* the TS
  * none/convex/self cascade for python configs — it is invoked via a single
  * early-return at the top of both validation entry points, so the TS validators
  * never run for python. It validates the resolved config values directly
  * (python configs are fully projected at construction), rejecting any TS-only
- * choice the user explicitly forced. Heavy-GenAI / accelerator rules arrive with
- * the capability packs (Slice 08).
+ * choice the user explicitly forced, plus the heavy-GenAI / accelerator rules
+ * from the capability packs (Slice 08).
  */
 export function validatePythonConstraints(config: Partial<ProjectConfig>): ValidationResult {
   if (config.ecosystem !== "python") {
@@ -266,6 +270,24 @@ export function validatePythonConstraints(config: Partial<ProjectConfig>): Valid
 
   if (config.dbSetup && config.dbSetup !== "none") {
     return validationErr("Python ecosystem requires '--db-setup none' in v1.");
+  }
+
+  const heavyGenai = (config.pythonGenai ?? []).filter((pack) =>
+    HEAVY_GENAI_PACKS.includes(pack as (typeof HEAVY_GENAI_PACKS)[number]),
+  );
+
+  if (heavyGenai.length > 0) {
+    if (config.accelerator === "cpu") {
+      return validationErr(
+        `Heavy GenAI packs (${heavyGenai.join(", ")}) require a GPU accelerator. Choose '--accelerator cu121', 'cu124', or 'rocm'.`,
+      );
+    }
+
+    if (config.serverDeploy === "cloudflare") {
+      return validationErr(
+        `Heavy GenAI packs (${heavyGenai.join(", ")}) are not compatible with Cloudflare Workers (no GPU). Choose a different server deployment.`,
+      );
+    }
   }
 
   return Result.ok(undefined);

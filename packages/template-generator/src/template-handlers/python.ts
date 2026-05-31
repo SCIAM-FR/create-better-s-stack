@@ -3,14 +3,38 @@ import type { ProjectConfig } from "@better-t-stack/types";
 import { toPythonPackageName } from "../core/template-processor";
 import type { VirtualFileSystem } from "../core/virtual-fs";
 import { GeneratorError } from "../types";
+import { processPythonPyproject } from "./python-deps";
+import { emitDockerCompose, emitOrmScaffolding, emitStarters } from "./python-scaffolding";
 import { type TemplateData, processTemplatesFromPrefix } from "./utils";
 
 /**
  * Routes python generation by `pythonApp`, bypassing the TS `base` pipeline
- * entirely (plan §7.1). Slice 02 implements the `library` shape; the remaining
- * shapes land in later slices and throw until then so the seam is explicit.
+ * entirely (plan §7.1), then layers the cross-cutting capability artifacts
+ * (ORM + database, ML/GenAI/Agents packs, accelerator wiring, starters) that
+ * are independent of the chosen shape.
  */
 export function processPythonTemplates(
+  vfs: VirtualFileSystem,
+  templates: TemplateData,
+  config: ProjectConfig,
+): void {
+  routePythonShape(vfs, templates, config);
+
+  // Cross-cutting capability layering (Slices 6–8): thread ORM deps, pack
+  // extras, accelerator wiring, requires-python and conflicts into the generated
+  // pyproject, then emit ORM scaffolding, a local-DB compose file and opt-in
+  // starters. Each is a no-op when the corresponding fields are inert.
+  processPythonPyproject(vfs, config);
+  emitOrmScaffolding(vfs, config);
+  emitDockerCompose(vfs, config);
+  emitStarters(vfs, config);
+}
+
+/**
+ * Routes by `pythonApp` to the per-shape templates. Throws for an unimplemented
+ * shape so the seam stays explicit.
+ */
+function routePythonShape(
   vfs: VirtualFileSystem,
   templates: TemplateData,
   config: ProjectConfig,
