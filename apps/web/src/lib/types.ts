@@ -1,5 +1,6 @@
 // TechCategory for the stack builder UI
 export type TechCategory =
+  | "ecosystem"
   | "api"
   | "webFrontend"
   | "nativeFrontend"
@@ -16,7 +17,15 @@ export type TechCategory =
   | "addons"
   | "examples"
   | "git"
-  | "install";
+  | "install"
+  // Python ecosystem categories (mirrors the CLI's --python-* fields)
+  | "pythonApp"
+  | "pythonOrm"
+  | "pythonMl"
+  | "pythonGenai"
+  | "pythonAgents"
+  | "accelerator"
+  | "pythonStarter";
 
 export type TechEdge = {
   id: string;

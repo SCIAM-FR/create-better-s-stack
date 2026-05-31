@@ -272,3 +272,114 @@ describe("stack builder D1 compatibility", () => {
     expect(getDisabledReason(fullstackStack, "addons", "evlog")).toBeNull();
   });
 });
+
+describe("stack builder python ecosystem", () => {
+  test("ts mode is the default and command is unchanged", () => {
+    const stack = createStack();
+    expect(stack.ecosystem).toBe("ts");
+    expect(generateStackCommand(stack)).toContain("--yes");
+  });
+
+  test("switching to python collapses the TS-only fields to inert values", () => {
+    const stack = createStack({
+      ecosystem: "python",
+      pythonApp: "fastapi",
+      backend: "hono",
+      runtime: "bun",
+      api: "trpc",
+      orm: "drizzle",
+      auth: "better-auth",
+      webFrontend: ["tanstack-router"],
+      addons: ["turborepo"],
+    });
+
+    const result = analyzeStackCompatibility(stack);
+    expect(result.adjustedStack).toMatchObject({
+      backend: "none",
+      runtime: "none",
+      api: "none",
+      orm: "none",
+      auth: "none",
+      webFrontend: ["none"],
+      addons: ["none"],
+    });
+  });
+
+  test("generates a python command carrying the --python-* flags", () => {
+    const stack = createStack({
+      ecosystem: "python",
+      pythonApp: "fastapi",
+      pythonOrm: "sqlalchemy",
+      database: "postgres",
+      pythonMl: ["pytorch"],
+      accelerator: "cu124",
+      pythonStarter: "true",
+    });
+
+    const command = generateStackCommand(stack);
+    expect(command).toContain("--ecosystem python");
+    expect(command).toContain("--python-app fastapi");
+    expect(command).toContain("--python-orm sqlalchemy");
+    expect(command).toContain("--database postgres");
+    expect(command).toContain("--python-ml pytorch");
+    expect(command).toContain("--accelerator cu124");
+    expect(command).toContain("--python-starter");
+    expect(command).toContain("--package-manager uv");
+    expect(command.startsWith("npx create-better-t-stack@latest")).toBe(true);
+  });
+
+  test("rejects MongoDB in python mode (SQL only)", () => {
+    const stack = createStack({ ecosystem: "python", pythonApp: "fastapi" });
+    expect(getDisabledReason(stack, "database", "mongodb")).not.toBeNull();
+    expect(getDisabledReason(stack, "database", "postgres")).toBeNull();
+  });
+
+  test("auto-adjusts MongoDB to none in python mode", () => {
+    const stack = createStack({
+      ecosystem: "python",
+      pythonApp: "fastapi",
+      database: "mongodb",
+    });
+    const result = analyzeStackCompatibility(stack);
+    expect(result.adjustedStack).toMatchObject({ database: "none" });
+  });
+
+  test("heavy GenAI requires a GPU accelerator", () => {
+    const stack = createStack({
+      ecosystem: "python",
+      pythonApp: "fastapi",
+      pythonGenai: ["vllm"],
+      accelerator: "cpu",
+    });
+    // cpu is disabled at prompt time...
+    expect(getDisabledReason(stack, "accelerator", "cpu")).not.toBeNull();
+    // ...and auto-bumped to a GPU.
+    const result = analyzeStackCompatibility(stack);
+    expect(result.adjustedStack?.accelerator).not.toBe("cpu");
+  });
+
+  test("only one of vllm/unsloth/trl can be selected", () => {
+    const stack = createStack({
+      ecosystem: "python",
+      pythonApp: "fastapi",
+      pythonGenai: ["vllm"],
+      accelerator: "cu124",
+    });
+    // Selecting a second conflicting heavy pack is blocked at prompt time.
+    expect(getDisabledReason(stack, "pythonGenai", "unsloth")).not.toBeNull();
+    // A light client still composes.
+    expect(getDisabledReason(stack, "pythonGenai", "anthropic")).toBeNull();
+
+    // And the analyzer dedupes if both somehow end up selected.
+    const both = createStack({
+      ecosystem: "python",
+      pythonApp: "fastapi",
+      pythonGenai: ["vllm", "unsloth"],
+      accelerator: "cu124",
+    });
+    const result = analyzeStackCompatibility(both);
+    const genai = result.adjustedStack?.pythonGenai ?? both.pythonGenai;
+    const conflicting = genai.filter((id) => ["vllm", "unsloth", "trl"].includes(id));
+    expect(conflicting).toHaveLength(1);
+  });
+});

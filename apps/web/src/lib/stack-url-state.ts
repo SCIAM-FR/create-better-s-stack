@@ -17,6 +17,9 @@ const getValidIds = (category: keyof typeof TECH_OPTIONS): string[] => {
 
 const serverStackParsers = {
   projectName: parseAsStringServer.withDefault(DEFAULT_STACK.projectName || "my-better-t-app"),
+  ecosystem: parseAsStringEnumServer<StackState["ecosystem"]>(getValidIds("ecosystem")).withDefault(
+    DEFAULT_STACK.ecosystem,
+  ),
   webFrontend: parseAsArrayOfServer(parseAsStringServer).withDefault(DEFAULT_STACK.webFrontend),
   nativeFrontend: parseAsArrayOfServer(parseAsStringServer).withDefault(
     DEFAULT_STACK.nativeFrontend,
@@ -63,6 +66,22 @@ const serverStackParsers = {
   yolo: parseAsStringEnumServer<StackState["yolo"]>(["true", "false"]).withDefault(
     DEFAULT_STACK.yolo,
   ),
+  pythonApp: parseAsStringEnumServer<StackState["pythonApp"]>(getValidIds("pythonApp")).withDefault(
+    DEFAULT_STACK.pythonApp,
+  ),
+  pythonOrm: parseAsStringEnumServer<StackState["pythonOrm"]>(getValidIds("pythonOrm")).withDefault(
+    DEFAULT_STACK.pythonOrm,
+  ),
+  pythonMl: parseAsArrayOfServer(parseAsStringServer).withDefault(DEFAULT_STACK.pythonMl),
+  pythonGenai: parseAsArrayOfServer(parseAsStringServer).withDefault(DEFAULT_STACK.pythonGenai),
+  pythonAgents: parseAsArrayOfServer(parseAsStringServer).withDefault(DEFAULT_STACK.pythonAgents),
+  accelerator: parseAsStringEnumServer<StackState["accelerator"]>(
+    getValidIds("accelerator"),
+  ).withDefault(DEFAULT_STACK.accelerator),
+  pythonStarter: parseAsStringEnumServer<StackState["pythonStarter"]>([
+    "true",
+    "false",
+  ]).withDefault(DEFAULT_STACK.pythonStarter),
 };
 
 const rawLoadStackParams = createLoader(serverStackParsers, {

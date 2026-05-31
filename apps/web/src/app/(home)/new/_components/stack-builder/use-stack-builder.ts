@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { DEFAULT_STACK, PRESET_TEMPLATES, type StackState, TECH_OPTIONS } from "@/lib/constant";
 import { sanitizeStackState } from "@/lib/sanitize-stack-addons";
 import { useStackState } from "@/lib/stack-url-state.client";
-import { CATEGORY_ORDER, generateStackCommand, generateStackSharingUrl } from "@/lib/stack-utils";
+import { getCategoryOrder, generateStackCommand, generateStackSharingUrl } from "@/lib/stack-utils";
 import type { TechCategory } from "@/lib/types";
 
 import { analyzeStackCompatibility, isOptionCompatible, validateProjectName } from "../utils";
@@ -17,8 +17,6 @@ type CategoryProgressItem = {
   total: number;
   done: boolean;
 };
-
-const CATEGORY_LIST = CATEGORY_ORDER as TechCategory[];
 
 function formatProjectName(name: string) {
   return name.replace(/\s+/g, "-");
@@ -135,7 +133,8 @@ export function useStackBuilder() {
   }, [stack, compatibilityAnalysis.adjustedStack]);
 
   const categoryProgress = useMemo<Array<CategoryProgressItem>>(() => {
-    return CATEGORY_LIST.map((category) => {
+    const categoryList = getCategoryOrder(stack.ecosystem) as TechCategory[];
+    return categoryList.map((category) => {
       const options = TECH_OPTIONS[category] || [];
       const selectedValue = stack[category as keyof StackState];
       const realOptionCount = options.filter((option) => option.id !== "none").length;
@@ -179,7 +178,7 @@ export function useStackBuilder() {
   function getRandomStack() {
     const randomStack: Partial<StackState> = {};
 
-    for (const category of CATEGORY_LIST) {
+    for (const category of getCategoryOrder(stack.ecosystem) as TechCategory[]) {
       const options = TECH_OPTIONS[category as keyof typeof TECH_OPTIONS] || [];
       if (options.length === 0) {
         continue;
@@ -246,7 +245,10 @@ export function useStackBuilder() {
           catKey === "webFrontend" ||
           catKey === "nativeFrontend" ||
           catKey === "addons" ||
-          catKey === "examples"
+          catKey === "examples" ||
+          catKey === "pythonMl" ||
+          catKey === "pythonGenai" ||
+          catKey === "pythonAgents"
         ) {
           const currentArray = Array.isArray(currentValue) ? [...currentValue] : [];
           let nextArray = [...currentArray];
@@ -376,6 +378,8 @@ export function useStackBuilder() {
     }
 
     startTransition(() => {
+      // Presets are full TypeScript stacks (they carry ecosystem: "ts" and inert
+      // python fields), so applying one from python mode returns to TS cleanly.
       setStack(preset.stack);
     });
 

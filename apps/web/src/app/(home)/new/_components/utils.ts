@@ -1,7 +1,16 @@
 import { desktopWebFrontends } from "@better-t-stack/types";
 
 import { DEFAULT_STACK, type StackState, type TECH_OPTIONS } from "@/lib/constant";
-import { CATEGORY_ORDER } from "@/lib/stack-utils";
+import { getCategoryOrder } from "@/lib/stack-utils";
+
+// Heavy GenAI packs own the torch graph and imply a GPU; the conflicting set is
+// mutually exclusive (they pin incompatible torch/transformers versions).
+const HEAVY_GENAI = ["transformers", "vllm", "unsloth", "trl", "peft", "accelerate"] as const;
+const CONFLICTING_HEAVY_GENAI = ["vllm", "unsloth", "trl"] as const;
+
+const isHeavyGenaiPick = (id: string) => HEAVY_GENAI.includes(id as (typeof HEAVY_GENAI)[number]);
+const isConflictingHeavyPick = (id: string) =>
+  CONFLICTING_HEAVY_GENAI.includes(id as (typeof CONFLICTING_HEAVY_GENAI)[number]);
 
 export function validateProjectName(name: string): string | undefined {
   const INVALID_CHARS = ["<", ">", ":", '"', "|", "?", "*"];
@@ -129,8 +138,85 @@ export const analyzeStackCompatibility = (stack: StackState): CompatibilityResul
   const notes: CompatibilityResult["notes"] = {};
   const changes: Array<{ category: string; message: string }> = [];
 
-  for (const cat of CATEGORY_ORDER) {
+  for (const cat of getCategoryOrder(stack.ecosystem)) {
     notes[cat] = { notes: [], hasIssue: false };
+  }
+
+  // ============================================
+  // PYTHON ECOSYSTEM — replaces the TS cascade entirely (mirrors the CLI's single
+  // early-return for python). TS-only fields collapse to inert values; the python
+  // fields carry the stack.
+  // ============================================
+  if (stack.ecosystem === "python") {
+    nextStack.webFrontend = ["none"];
+    nextStack.nativeFrontend = ["none"];
+    nextStack.backend = "none";
+    nextStack.runtime = "none";
+    nextStack.api = "none";
+    nextStack.orm = "none";
+    nextStack.auth = "none";
+    nextStack.payments = "none";
+    nextStack.dbSetup = "none";
+    nextStack.webDeploy = "none";
+    nextStack.serverDeploy = "none";
+    nextStack.addons = ["none"];
+    nextStack.examples = ["none"];
+
+    // SQL-only in v1: MongoDB is rejected.
+    if (nextStack.database === "mongodb") {
+      nextStack.database = "none";
+      changes.push({
+        category: "database",
+        message: "MongoDB isn't supported for Python (SQL only); set to None",
+      });
+    }
+
+    // At most one of vllm/unsloth/trl — keep the first selected.
+    const genaiReal = nextStack.pythonGenai.filter((id) => id !== "none");
+    const conflicting = genaiReal.filter(isConflictingHeavyPick);
+    if (conflicting.length > 1) {
+      const keep = conflicting[0];
+      const deduped = genaiReal.filter((id) => !isConflictingHeavyPick(id) || id === keep);
+      nextStack.pythonGenai = deduped.length > 0 ? deduped : ["none"];
+      changes.push({
+        category: "pythonGenai",
+        message: `Only one of vllm/unsloth/trl can be selected; kept ${keep}`,
+      });
+    }
+
+    // Heavy GenAI implies a GPU — never cpu.
+    if (nextStack.pythonGenai.some(isHeavyGenaiPick) && nextStack.accelerator === "cpu") {
+      nextStack.accelerator = "cu124";
+      changes.push({
+        category: "accelerator",
+        message: "Heavy GenAI needs a GPU; accelerator set to CUDA 12.4",
+      });
+    }
+
+    const pythonChanged = JSON.stringify(nextStack) !== JSON.stringify(stack);
+    return { adjustedStack: pythonChanged ? nextStack : null, notes, changes };
+  }
+
+  // TS ecosystem: keep the python fields inert (they are hidden in TS mode). This
+  // is a silent reset — no user-facing change message — so switching python → ts
+  // restores `--yes`-clean defaults without a toast.
+  if (
+    nextStack.pythonApp !== "none" ||
+    nextStack.pythonOrm !== "none" ||
+    nextStack.accelerator !== "cpu" ||
+    nextStack.pythonStarter !== "false" ||
+    nextStack.pythonMl.some((id) => id !== "none") ||
+    nextStack.pythonGenai.some((id) => id !== "none") ||
+    nextStack.pythonAgents.some((id) => id !== "none")
+  ) {
+    nextStack.pythonApp = "none";
+    nextStack.pythonOrm = "none";
+    nextStack.accelerator = "cpu";
+    nextStack.pythonStarter = "false";
+    nextStack.pythonMl = ["none"];
+    nextStack.pythonGenai = ["none"];
+    nextStack.pythonAgents = ["none"];
+    changed = true;
   }
 
   // ============================================
@@ -750,6 +836,31 @@ export const getDisabledReason = (
   category: keyof typeof TECH_OPTIONS,
   optionId: string,
 ): string | null => {
+  // ============================================
+  // PYTHON ECOSYSTEM — short-circuits the TS rules (which would otherwise treat
+  // backend "none" as "no database"). Only the python-specific locks apply.
+  // ============================================
+  if (currentStack.ecosystem === "python") {
+    if (category === "database" && optionId === "mongodb") {
+      return "Python supports SQL databases only (no MongoDB) in v1";
+    }
+    if (
+      category === "accelerator" &&
+      optionId === "cpu" &&
+      currentStack.pythonGenai.some(isHeavyGenaiPick)
+    ) {
+      return "Heavy GenAI packs require a GPU accelerator";
+    }
+    if (
+      category === "pythonGenai" &&
+      isConflictingHeavyPick(optionId) &&
+      currentStack.pythonGenai.some((id) => id !== optionId && isConflictingHeavyPick(id))
+    ) {
+      return "Only one of vllm/unsloth/trl can be selected";
+    }
+    return null;
+  }
+
   // ============================================
   // CONVEX BACKEND - locks down many options
   // ============================================

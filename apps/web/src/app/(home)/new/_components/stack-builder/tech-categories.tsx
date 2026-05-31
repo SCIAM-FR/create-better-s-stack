@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import type { StackState } from "@/lib/constant";
 import { TECH_OPTIONS } from "@/lib/constant";
-import { CATEGORY_ORDER } from "@/lib/stack-utils";
+import { getCategoryOrder } from "@/lib/stack-utils";
 import type { TechCategory } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -26,7 +26,10 @@ function getIsSelected(stack: StackState, category: keyof StackState, techId: st
     category === "addons" ||
     category === "examples" ||
     category === "webFrontend" ||
-    category === "nativeFrontend"
+    category === "nativeFrontend" ||
+    category === "pythonMl" ||
+    category === "pythonGenai" ||
+    category === "pythonAgents"
   ) {
     return ((currentValue as string[]) || []).includes(techId);
   }
@@ -42,7 +45,8 @@ export function TechCategories({
   showAllCategories = false,
 }: TechCategoriesProps) {
   const isDesktop = mode === "desktop";
-  const categories = showAllCategories ? CATEGORY_ORDER : [CATEGORY_ORDER[0]];
+  const categoryOrder = getCategoryOrder(stack.ecosystem);
+  const categories = showAllCategories ? categoryOrder : [categoryOrder[0]];
 
   return (
     <>

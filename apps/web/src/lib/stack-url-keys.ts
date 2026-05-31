@@ -6,6 +6,7 @@ export const stackUrlKeys: UrlKeys<
   Record<keyof StackState, unknown> & { viewMode: unknown; selectedFile: unknown }
 > = {
   projectName: "name",
+  ecosystem: "eco",
   webFrontend: "fe-w",
   nativeFrontend: "fe-n",
   runtime: "rt",
@@ -24,6 +25,13 @@ export const stackUrlKeys: UrlKeys<
   webDeploy: "wd",
   serverDeploy: "sd",
   yolo: "yolo",
+  pythonApp: "pa",
+  pythonOrm: "porm",
+  pythonMl: "pml",
+  pythonGenai: "pgen",
+  pythonAgents: "pag",
+  accelerator: "acc",
+  pythonStarter: "pstart",
   viewMode: "view",
   selectedFile: "file",
 };

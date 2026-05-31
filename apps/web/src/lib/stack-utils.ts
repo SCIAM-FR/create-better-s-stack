@@ -1,7 +1,7 @@
 import { DEFAULT_STACK, isStackDefault, type StackState, TECH_OPTIONS } from "@/lib/constant";
 import { stackUrlKeys } from "@/lib/stack-url-keys";
 
-const CATEGORY_ORDER: Array<keyof typeof TECH_OPTIONS> = [
+const TS_CATEGORY_ORDER: Array<keyof typeof TECH_OPTIONS> = [
   "webFrontend",
   "nativeFrontend",
   "backend",
@@ -21,6 +21,34 @@ const CATEGORY_ORDER: Array<keyof typeof TECH_OPTIONS> = [
   "install",
 ];
 
+// Python mode swaps the whole TS category set for the Python one (plan Slice 11):
+// the two stacks are largely disjoint. `database` is reused (SQL-only); the rest
+// are the `--python-*` fields. `ecosystem` leads both so the mode switch is always
+// visible.
+const PYTHON_CATEGORY_ORDER: Array<keyof typeof TECH_OPTIONS> = [
+  "pythonApp",
+  "pythonOrm",
+  "database",
+  "pythonMl",
+  "pythonGenai",
+  "pythonAgents",
+  "accelerator",
+  "pythonStarter",
+  "git",
+  "install",
+];
+
+/**
+ * The ecosystem mode switch: returns the category set for the active ecosystem,
+ * always led by `ecosystem` itself so users can flip back. TS mode is unchanged
+ * apart from the leading ecosystem selector.
+ */
+export function getCategoryOrder(ecosystem: string): Array<keyof typeof TECH_OPTIONS> {
+  return ["ecosystem", ...(ecosystem === "python" ? PYTHON_CATEGORY_ORDER : TS_CATEGORY_ORDER)];
+}
+
+const CATEGORY_ORDER: Array<keyof typeof TECH_OPTIONS> = getCategoryOrder("ts");
+
 const desktopAddonNames = {
   tauri: "Tauri",
   electrobun: "Electrobun",
@@ -35,7 +63,7 @@ const staticDesktopFrontendNames = {
 } as const;
 
 export function generateStackSummary(stack: StackState) {
-  const selectedTechs = CATEGORY_ORDER.flatMap((category) => {
+  const selectedTechs = getCategoryOrder(stack.ecosystem).flatMap((category) => {
     const options = TECH_OPTIONS[category];
     const selectedValue = stack[category as keyof StackState];
 
@@ -97,6 +125,31 @@ export function generateStackCommand(stack: StackState) {
     packageManagerCommands[stack.packageManager as keyof typeof packageManagerCommands] ||
     packageManagerCommands.default;
   const projectName = stack.projectName || "my-better-t-app";
+
+  // Python ecosystem command form (plan Slice 11 / §12). The CLI is run via npx
+  // for uv projects (you don't install the CLI through uv).
+  if (stack.ecosystem === "python") {
+    const picked = (arr: string[]) => arr.filter((id) => id !== "none");
+    const pyFlags = [
+      "--ecosystem python",
+      `--python-app ${stack.pythonApp}`,
+      `--python-orm ${stack.pythonOrm}`,
+      `--database ${stack.database}`,
+      `--accelerator ${stack.accelerator}`,
+      "--package-manager uv",
+    ];
+    const ml = picked(stack.pythonMl);
+    if (ml.length > 0) pyFlags.push(`--python-ml ${ml.join(" ")}`);
+    const genai = picked(stack.pythonGenai);
+    if (genai.length > 0) pyFlags.push(`--python-genai ${genai.join(" ")}`);
+    const agents = picked(stack.pythonAgents);
+    if (agents.length > 0) pyFlags.push(`--python-agents ${agents.join(" ")}`);
+    if (stack.pythonStarter === "true") pyFlags.push("--python-starter");
+    pyFlags.push(stack.git === "false" ? "--no-git" : "--git");
+    pyFlags.push(stack.install === "false" ? "--no-install" : "--install");
+    if (stack.yolo === "true") pyFlags.push("--yolo");
+    return `npx create-better-t-stack@latest ${projectName} ${pyFlags.join(" ")}`;
+  }
 
   const isStackDefaultExceptProjectName = Object.entries(DEFAULT_STACK).every(
     ([key]) =>

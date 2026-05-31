@@ -12,6 +12,9 @@ const getValidIds = (category: keyof typeof TECH_OPTIONS): string[] => {
 
 export const stackParsers = {
   projectName: parseAsString.withDefault(DEFAULT_STACK.projectName ?? "my-better-t-app"),
+  ecosystem: parseAsStringEnum<StackState["ecosystem"]>(getValidIds("ecosystem")).withDefault(
+    DEFAULT_STACK.ecosystem,
+  ),
   webFrontend: parseAsArrayOf(parseAsString).withDefault(DEFAULT_STACK.webFrontend),
   nativeFrontend: parseAsArrayOf(parseAsString).withDefault(DEFAULT_STACK.nativeFrontend),
   runtime: parseAsStringEnum<StackState["runtime"]>(getValidIds("runtime")).withDefault(
@@ -48,6 +51,21 @@ export const stackParsers = {
     getValidIds("serverDeploy"),
   ).withDefault(DEFAULT_STACK.serverDeploy),
   yolo: parseAsStringEnum<StackState["yolo"]>(["true", "false"]).withDefault(DEFAULT_STACK.yolo),
+  pythonApp: parseAsStringEnum<StackState["pythonApp"]>(getValidIds("pythonApp")).withDefault(
+    DEFAULT_STACK.pythonApp,
+  ),
+  pythonOrm: parseAsStringEnum<StackState["pythonOrm"]>(getValidIds("pythonOrm")).withDefault(
+    DEFAULT_STACK.pythonOrm,
+  ),
+  pythonMl: parseAsArrayOf(parseAsString).withDefault(DEFAULT_STACK.pythonMl),
+  pythonGenai: parseAsArrayOf(parseAsString).withDefault(DEFAULT_STACK.pythonGenai),
+  pythonAgents: parseAsArrayOf(parseAsString).withDefault(DEFAULT_STACK.pythonAgents),
+  accelerator: parseAsStringEnum<StackState["accelerator"]>(getValidIds("accelerator")).withDefault(
+    DEFAULT_STACK.accelerator,
+  ),
+  pythonStarter: parseAsStringEnum<StackState["pythonStarter"]>(["true", "false"]).withDefault(
+    DEFAULT_STACK.pythonStarter,
+  ),
   viewMode: parseAsStringEnum<"command" | "preview">(["command", "preview"]).withDefault("command"),
   selectedFile: parseAsString.withDefault(""),
 };
@@ -66,6 +84,7 @@ export function useStackState() {
 
   const stack = sanitizeStackState({
     projectName: queryState.projectName,
+    ecosystem: queryState.ecosystem,
     webFrontend: queryState.webFrontend,
     nativeFrontend: queryState.nativeFrontend,
     runtime: queryState.runtime,
@@ -84,6 +103,13 @@ export function useStackState() {
     webDeploy: queryState.webDeploy,
     serverDeploy: queryState.serverDeploy,
     yolo: queryState.yolo,
+    pythonApp: queryState.pythonApp,
+    pythonOrm: queryState.pythonOrm,
+    pythonMl: queryState.pythonMl,
+    pythonGenai: queryState.pythonGenai,
+    pythonAgents: queryState.pythonAgents,
+    accelerator: queryState.accelerator,
+    pythonStarter: queryState.pythonStarter,
   });
 
   const viewMode = queryState.viewMode;

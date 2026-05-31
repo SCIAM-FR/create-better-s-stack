@@ -4,6 +4,9 @@ const validWebFrontendIds = new Set(TECH_OPTIONS.webFrontend.map((option) => opt
 const validNativeFrontendIds = new Set(TECH_OPTIONS.nativeFrontend.map((option) => option.id));
 const validAddonIds = new Set(["none", ...TECH_OPTIONS.addons.map((option) => option.id)]);
 const validExampleIds = new Set(["none", ...TECH_OPTIONS.examples.map((option) => option.id)]);
+const validPythonMlIds = new Set(TECH_OPTIONS.pythonMl.map((option) => option.id));
+const validPythonGenaiIds = new Set(TECH_OPTIONS.pythonGenai.map((option) => option.id));
+const validPythonAgentsIds = new Set(TECH_OPTIONS.pythonAgents.map((option) => option.id));
 
 function sanitizeSingleSelection(
   values: readonly string[] | null | undefined,
@@ -80,6 +83,18 @@ export function sanitizeNativeFrontends(
   );
 }
 
+export function sanitizePythonMl(values: readonly string[] | null | undefined): string[] {
+  return sanitizeMultiSelection(values, validPythonMlIds, DEFAULT_STACK.pythonMl);
+}
+
+export function sanitizePythonGenai(values: readonly string[] | null | undefined): string[] {
+  return sanitizeMultiSelection(values, validPythonGenaiIds, DEFAULT_STACK.pythonGenai);
+}
+
+export function sanitizePythonAgents(values: readonly string[] | null | undefined): string[] {
+  return sanitizeMultiSelection(values, validPythonAgentsIds, DEFAULT_STACK.pythonAgents);
+}
+
 export function sanitizeStackState(stack: StackState): StackState {
   return {
     ...stack,
@@ -87,6 +102,9 @@ export function sanitizeStackState(stack: StackState): StackState {
     nativeFrontend: sanitizeNativeFrontends(stack.nativeFrontend),
     addons: sanitizeAddons(stack.addons),
     examples: sanitizeExamples(stack.examples),
+    pythonMl: sanitizePythonMl(stack.pythonMl),
+    pythonGenai: sanitizePythonGenai(stack.pythonGenai),
+    pythonAgents: sanitizePythonAgents(stack.pythonAgents),
   };
 }
 

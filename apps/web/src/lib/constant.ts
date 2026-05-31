@@ -14,6 +14,23 @@ export const TECH_OPTIONS: Record<
     className?: string;
   }[]
 > = {
+  ecosystem: [
+    {
+      id: "ts",
+      name: "TypeScript",
+      description: "The default end-to-end type-safe TypeScript stack",
+      icon: `${ICON_BASE_URL}/typescript.svg`,
+      color: "from-blue-400 to-blue-600",
+      default: true,
+    },
+    {
+      id: "python",
+      name: "Python",
+      description: "Python apps and capability packs, installed with uv",
+      icon: `${ICON_BASE_URL}/python.svg`,
+      color: "from-yellow-400 to-blue-500",
+    },
+  ],
   api: [
     {
       id: "trpc",
@@ -687,6 +704,328 @@ export const TECH_OPTIONS: Record<
       color: "from-yellow-400 to-yellow-600",
     },
   ],
+  pythonApp: [
+    {
+      id: "fastapi",
+      name: "FastAPI",
+      description: "Modern async Python API service",
+      icon: `${ICON_BASE_URL}/fastapi.svg`,
+      color: "from-teal-400 to-green-600",
+      default: true,
+    },
+    {
+      id: "library",
+      name: "Library",
+      description: "A distributable Python package",
+      icon: "",
+      color: "from-gray-400 to-gray-600",
+    },
+    {
+      id: "streamlit",
+      name: "Streamlit",
+      description: "Data app where the UI is the server",
+      icon: "",
+      color: "from-red-400 to-red-600",
+    },
+    {
+      id: "gradio",
+      name: "Gradio",
+      description: "ML demo UI where the UI is the server",
+      icon: "",
+      color: "from-orange-400 to-orange-600",
+    },
+    {
+      id: "fasthtml",
+      name: "FastHTML",
+      description: "Hypermedia app where the UI is the server",
+      icon: "",
+      color: "from-indigo-400 to-indigo-600",
+    },
+    {
+      id: "fastapi+streamlit",
+      name: "FastAPI + Streamlit",
+      description: "Two-app uv workspace (API + UI)",
+      icon: "",
+      color: "from-teal-400 to-red-500",
+    },
+    {
+      id: "none",
+      name: "No App",
+      description: "No Python app shape",
+      icon: "",
+      color: "from-gray-400 to-gray-600",
+    },
+  ],
+  pythonOrm: [
+    {
+      id: "none",
+      name: "No ORM",
+      description: "No Python ORM",
+      icon: "",
+      color: "from-gray-400 to-gray-600",
+      default: true,
+    },
+    {
+      id: "sqlalchemy",
+      name: "SQLAlchemy",
+      description: "The Python SQL toolkit and ORM",
+      icon: "",
+      color: "from-red-500 to-red-700",
+    },
+    {
+      id: "sqlmodel",
+      name: "SQLModel",
+      description: "SQLAlchemy + Pydantic models",
+      icon: "",
+      color: "from-teal-500 to-teal-700",
+    },
+    {
+      id: "tortoise",
+      name: "Tortoise ORM",
+      description: "Async ORM inspired by Django",
+      icon: "",
+      color: "from-green-500 to-green-700",
+    },
+  ],
+  pythonMl: [
+    {
+      id: "none",
+      name: "No ML",
+      description: "No ML capability pack",
+      icon: "",
+      color: "from-gray-400 to-gray-600",
+      default: true,
+    },
+    {
+      id: "scikit-learn",
+      name: "scikit-learn",
+      description: "Classic ML algorithms",
+      icon: "",
+      color: "from-orange-400 to-orange-600",
+    },
+    {
+      id: "pytorch",
+      name: "PyTorch",
+      description: "Deep learning (surfaces the accelerator)",
+      icon: "",
+      color: "from-red-500 to-orange-500",
+    },
+    {
+      id: "tensorflow",
+      name: "TensorFlow",
+      description: "Deep learning framework",
+      icon: "",
+      color: "from-orange-500 to-yellow-500",
+    },
+    {
+      id: "jax",
+      name: "JAX",
+      description: "Composable transforms of numpy programs",
+      icon: "",
+      color: "from-purple-500 to-purple-700",
+    },
+    {
+      id: "xgboost",
+      name: "XGBoost",
+      description: "Gradient boosting",
+      icon: "",
+      color: "from-green-500 to-green-700",
+    },
+    {
+      id: "lightgbm",
+      name: "LightGBM",
+      description: "Fast gradient boosting",
+      icon: "",
+      color: "from-lime-500 to-green-600",
+    },
+  ],
+  pythonGenai: [
+    {
+      id: "none",
+      name: "No GenAI",
+      description: "No GenAI capability pack",
+      icon: "",
+      color: "from-gray-400 to-gray-600",
+      default: true,
+    },
+    {
+      id: "openai",
+      name: "OpenAI",
+      description: "Light HTTP client (composes with anything)",
+      icon: "",
+      color: "from-gray-600 to-black",
+    },
+    {
+      id: "anthropic",
+      name: "Anthropic",
+      description: "Light HTTP client (composes with anything)",
+      icon: "",
+      color: "from-amber-500 to-orange-600",
+    },
+    {
+      id: "google-genai",
+      name: "Google GenAI",
+      description: "Light HTTP client (composes with anything)",
+      icon: "",
+      color: "from-blue-500 to-green-500",
+    },
+    {
+      id: "litellm",
+      name: "LiteLLM",
+      description: "Unified light client (composes with anything)",
+      icon: "",
+      color: "from-pink-500 to-rose-600",
+    },
+    {
+      id: "transformers",
+      name: "Transformers",
+      description: "Heavy: owns the torch graph, needs a GPU",
+      icon: "",
+      color: "from-yellow-500 to-amber-600",
+    },
+    {
+      id: "vllm",
+      name: "vLLM",
+      description: "Heavy serve: conflicts with unsloth/trl",
+      icon: "",
+      color: "from-sky-500 to-indigo-600",
+    },
+    {
+      id: "unsloth",
+      name: "Unsloth",
+      description: "Heavy train: conflicts with vllm/trl",
+      icon: "",
+      color: "from-emerald-500 to-teal-600",
+    },
+    {
+      id: "trl",
+      name: "TRL",
+      description: "Heavy train: conflicts with vllm/unsloth",
+      icon: "",
+      color: "from-fuchsia-500 to-purple-600",
+    },
+    {
+      id: "peft",
+      name: "PEFT",
+      description: "Heavy: parameter-efficient fine-tuning",
+      icon: "",
+      color: "from-violet-500 to-purple-600",
+    },
+    {
+      id: "accelerate",
+      name: "Accelerate",
+      description: "Heavy: distributed training helpers",
+      icon: "",
+      color: "from-cyan-500 to-blue-600",
+    },
+  ],
+  pythonAgents: [
+    {
+      id: "none",
+      name: "No Agents",
+      description: "No agents capability pack",
+      icon: "",
+      color: "from-gray-400 to-gray-600",
+      default: true,
+    },
+    {
+      id: "langgraph",
+      name: "LangGraph",
+      description: "Stateful agent graphs",
+      icon: "",
+      color: "from-green-500 to-emerald-600",
+    },
+    {
+      id: "openai-agents",
+      name: "OpenAI Agents",
+      description: "OpenAI Agents SDK",
+      icon: "",
+      color: "from-gray-600 to-black",
+    },
+    {
+      id: "claude-agent-sdk",
+      name: "Claude Agent SDK",
+      description: "Anthropic agent SDK",
+      icon: "",
+      color: "from-amber-500 to-orange-600",
+    },
+    {
+      id: "pydantic-ai",
+      name: "Pydantic AI",
+      description: "Type-safe agent framework",
+      icon: "",
+      color: "from-pink-500 to-rose-600",
+    },
+    {
+      id: "llamaindex",
+      name: "LlamaIndex",
+      description: "Data framework for agents",
+      icon: "",
+      color: "from-indigo-500 to-violet-600",
+    },
+    {
+      id: "crewai",
+      name: "CrewAI",
+      description: "Multi-agent orchestration",
+      icon: "",
+      color: "from-red-500 to-rose-600",
+    },
+    {
+      id: "autogen",
+      name: "AutoGen",
+      description: "Conversational multi-agent framework",
+      icon: "",
+      color: "from-blue-500 to-cyan-600",
+    },
+  ],
+  accelerator: [
+    {
+      id: "cpu",
+      name: "CPU",
+      description: "Default PyPI wheels (no explicit index)",
+      icon: "",
+      color: "from-gray-400 to-gray-600",
+      default: true,
+    },
+    {
+      id: "cu121",
+      name: "CUDA 12.1",
+      description: "Linux-gated CUDA 12.1 torch wheels",
+      icon: "",
+      color: "from-green-500 to-green-700",
+    },
+    {
+      id: "cu124",
+      name: "CUDA 12.4",
+      description: "Linux-gated CUDA 12.4 torch wheels",
+      icon: "",
+      color: "from-green-500 to-emerald-700",
+    },
+    {
+      id: "rocm",
+      name: "ROCm",
+      description: "Experimental AMD wheels (Linux-only)",
+      icon: "",
+      color: "from-red-500 to-red-700",
+    },
+  ],
+  pythonStarter: [
+    {
+      id: "false",
+      name: "No Starter",
+      description: "Do not emit per-pack starter modules",
+      icon: "",
+      color: "from-gray-400 to-gray-600",
+      default: true,
+    },
+    {
+      id: "true",
+      name: "Starter Modules",
+      description: "Emit per-pack starters (train.py / serve.py / agent.py)",
+      icon: "",
+      color: "from-blue-500 to-indigo-600",
+    },
+  ],
 };
 
 export const PRESET_TEMPLATES = [
@@ -714,6 +1053,14 @@ export const PRESET_TEMPLATES = [
       webDeploy: "none",
       serverDeploy: "none",
       yolo: "false",
+      ecosystem: "ts",
+      pythonApp: "none",
+      pythonOrm: "none",
+      pythonMl: ["none"],
+      pythonGenai: ["none"],
+      pythonAgents: ["none"],
+      accelerator: "cpu",
+      pythonStarter: "false",
     },
   },
   {
@@ -740,6 +1087,14 @@ export const PRESET_TEMPLATES = [
       webDeploy: "none",
       serverDeploy: "none",
       yolo: "false",
+      ecosystem: "ts",
+      pythonApp: "none",
+      pythonOrm: "none",
+      pythonMl: ["none"],
+      pythonGenai: ["none"],
+      pythonAgents: ["none"],
+      accelerator: "cpu",
+      pythonStarter: "false",
     },
   },
   {
@@ -766,6 +1121,14 @@ export const PRESET_TEMPLATES = [
       webDeploy: "none",
       serverDeploy: "none",
       yolo: "false",
+      ecosystem: "ts",
+      pythonApp: "none",
+      pythonOrm: "none",
+      pythonMl: ["none"],
+      pythonGenai: ["none"],
+      pythonAgents: ["none"],
+      accelerator: "cpu",
+      pythonStarter: "false",
     },
   },
   {
@@ -792,12 +1155,21 @@ export const PRESET_TEMPLATES = [
       webDeploy: "none",
       serverDeploy: "none",
       yolo: "false",
+      ecosystem: "ts",
+      pythonApp: "none",
+      pythonOrm: "none",
+      pythonMl: ["none"],
+      pythonGenai: ["none"],
+      pythonAgents: ["none"],
+      accelerator: "cpu",
+      pythonStarter: "false",
     },
   },
 ];
 
 export type StackState = {
   projectName: string | null;
+  ecosystem: string;
   webFrontend: string[];
   nativeFrontend: string[];
   runtime: string;
@@ -816,10 +1188,19 @@ export type StackState = {
   webDeploy: string;
   serverDeploy: string;
   yolo: string;
+  // Python ecosystem fields (inert under the default `ts` ecosystem)
+  pythonApp: string;
+  pythonOrm: string;
+  pythonMl: string[];
+  pythonGenai: string[];
+  pythonAgents: string[];
+  accelerator: string;
+  pythonStarter: string;
 };
 
 export const DEFAULT_STACK: StackState = {
   projectName: "my-better-t-app",
+  ecosystem: "ts",
   webFrontend: ["tanstack-router"],
   nativeFrontend: ["none"],
   runtime: "bun",
@@ -838,6 +1219,14 @@ export const DEFAULT_STACK: StackState = {
   webDeploy: "none",
   serverDeploy: "none",
   yolo: "false",
+  // Python fields default to inert values; the ecosystem switch activates them.
+  pythonApp: "none",
+  pythonOrm: "none",
+  pythonMl: ["none"],
+  pythonGenai: ["none"],
+  pythonAgents: ["none"],
+  accelerator: "cpu",
+  pythonStarter: "false",
 };
 
 export const isStackDefault = <K extends keyof StackState>(

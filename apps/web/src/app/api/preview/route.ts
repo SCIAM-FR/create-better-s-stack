@@ -102,6 +102,18 @@ function stackStateToConfig(state: StackState): ProjectConfig {
     projectName: state.projectName || "my-better-t-app",
     projectDir: "/virtual",
     relativePath: "./virtual",
+    ecosystem: (state.ecosystem || "ts") as ProjectConfig["ecosystem"],
+    pythonApp: (state.pythonApp || "none") as ProjectConfig["pythonApp"],
+    pythonOrm: (state.pythonOrm || "none") as ProjectConfig["pythonOrm"],
+    pythonMl: (state.pythonMl || []).filter((m) => m !== "none") as ProjectConfig["pythonMl"],
+    pythonGenai: (state.pythonGenai || []).filter(
+      (g) => g !== "none",
+    ) as ProjectConfig["pythonGenai"],
+    pythonAgents: (state.pythonAgents || []).filter(
+      (a) => a !== "none",
+    ) as ProjectConfig["pythonAgents"],
+    accelerator: (state.accelerator || "cpu") as ProjectConfig["accelerator"],
+    pythonStarter: state.pythonStarter === "true",
     database: (state.database || "none") as ProjectConfig["database"],
     orm: (state.orm || "none") as ProjectConfig["orm"],
     backend,
