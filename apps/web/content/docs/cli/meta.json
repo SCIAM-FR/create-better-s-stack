@@ -1,5 +1,13 @@
 {
   "title": "CLI",
   "defaultOpen": true,
-  "pages": ["index", "agent-workflows", "programmatic-api", "options", "prompts", "compatibility"]
+  "pages": [
+    "index",
+    "agent-workflows",
+    "programmatic-api",
+    "options",
+    "python",
+    "prompts",
+    "compatibility"
+  ]
 }

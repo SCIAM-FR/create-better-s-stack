@@ -1,0 +1,139 @@
+---
+title: Python Ecosystem
+description: Scaffold Python projects with uv — app shapes, ORMs, ML/GenAI/Agents capability packs, accelerators, and Docker deploy
+---
+
+Better-T-Stack is polyglot. The top-level `--ecosystem` flag switches the whole
+stack between the default TypeScript experience and a Python one. When
+`--ecosystem python` is set, the TypeScript stack fields collapse to inert
+values and a parallel set of `--python-*` options takes over, all installed and
+run with [uv](https://docs.astral.sh/uv/).
+
+```bash
+create-better-t-stack my-api --ecosystem python --python-app fastapi
+```
+
+## The ecosystem switch
+
+### `--ecosystem <type>`
+
+- `ts`: TypeScript (default) — a complete no-op for the Python path.
+- `python`: Python — requires `--package-manager uv`, `--backend none`,
+  `--runtime none`, and `--api none` (the TypeScript stack fields are not used).
+
+## Python app shapes
+
+### `--python-app <shape>`
+
+The Python equivalent of choosing a frontend/backend — it collapses the stack
+into one runnable shape:
+
+- `library`: a distributable package (`src/<pkg>`, hatchling build backend).
+- `fastapi`: a flat-root FastAPI service.
+- `flask`, `django`: additional API services.
+- `streamlit`, `gradio`, `fasthtml`: Python-native fullstack apps where the UI
+  _is_ the server.
+- `fastapi+streamlit`: a two-app **uv workspace** (`apps/api` + `apps/app`) with
+  a single root lock.
+- `none`: no app shape.
+
+```bash
+create-better-t-stack my-app --ecosystem python --python-app fastapi+streamlit
+```
+
+## ORM + database
+
+### `--python-orm <orm>`
+
+Reuses the existing `--database` enum (SQL-only in v1) and adds a Python ORM:
+
+- `sqlalchemy`, `sqlmodel`, `tortoise`, or `none`.
+
+The chosen `--database` (`sqlite`/`postgres`/`mysql`) drives the right driver
+dependency, emits `db.py` scaffolding, and — for server databases — a local
+`docker-compose.yml`. MongoDB is **not** supported for Python in v1.
+
+```bash
+create-better-t-stack my-app --ecosystem python --python-app fastapi \
+  --python-orm sqlalchemy --database postgres
+```
+
+## Capability packs
+
+Capability packs are additive dependency groups, modeled like addons. Each pick
+adds a `[project.optional-dependencies]` group installed on demand with
+`uv sync --extra <group>`.
+
+### `--python-ml <packs...>`
+
+`scikit-learn`, `pytorch`, `tensorflow`, `jax`, `xgboost`, `lightgbm`. Torch-based
+picks surface the accelerator question (see below).
+
+### `--python-genai <packs...>`
+
+Split into light HTTP clients that compose with anything —
+`openai`, `anthropic`, `google-genai`, `litellm` — and heavy self-host/train packs
+that own the torch graph and imply a GPU — `transformers`, `vllm`, `unsloth`,
+`trl`, `peft`, `accelerate`. The mutually-exclusive heavy stacks (`vllm`/`unsloth`/`trl`)
+cannot be combined, and a `[tool.uv] conflicts` table keeps the `serve`/`train`
+extras apart. Heavy GenAI requires a GPU accelerator and cannot target Cloudflare.
+
+### `--python-agents <packs...>`
+
+`langgraph`, `openai-agents`, `claude-agent-sdk`, `pydantic-ai`, `llamaindex`,
+`crewai`, `autogen` — additive `agents` group, composes with the light clients.
+
+### `--accelerator <target>`
+
+For torch-based picks only:
+
+- `cpu` (default): plain wheels from PyPI, no explicit index.
+- `cu121`, `cu124`: CUDA wheels via uv's canonical `[[tool.uv.index]]` +
+  `explicit = true` + a Linux-marked `[tool.uv.sources]` torch entry.
+- `rocm`: experimental AMD wheels (Linux-only).
+
+In v1 the CUDA/ROCm wheels are **Linux-gated** (`sys_platform == 'linux'`), so
+macOS/Windows fall back to CPU/MPS wheels.
+
+### `--python-starter`
+
+Opt-in. Emits a per-pack starter module: `train.py` for ML/heavy-train packs,
+`serve.py` for vLLM, and `agent.py` for the agents pack.
+
+```bash
+create-better-t-stack my-trainer --ecosystem python --python-app library \
+  --python-ml pytorch --accelerator cu124 --python-starter
+```
+
+## Install, run, and deploy
+
+Python projects install with `uv sync` (capability packs add `--extra <group>`)
+and run with `uv run`:
+
+```bash
+cd my-app
+uv sync                       # add --extra ml / --extra serve / ... for packs
+uv run fastapi dev main.py    # or: streamlit run app.py, pytest, ...
+```
+
+Deployment is Docker-only in v1: a generated `Dockerfile` installs the project
+with uv, using an `nvidia/cuda:*` base only when a `cu*` accelerator and a heavy
+GenAI pack are both present, otherwise a `python:3.x-slim` base. Managed-platform
+web/server deploy (`--web-deploy`/`--server-deploy`) stays `none` for Python in v1.
+
+## v1 limitations
+
+- **SQL only** — MongoDB is rejected; `--db-setup` must be `none`.
+- **Docker-only deploy** — managed web/server deploy is deferred to v2.
+- **Linux-only CUDA/ROCm wheels** — other platforms fall back to CPU/MPS.
+
+## Reproducible commands
+
+A generated Python project records a reproducible command carrying the Python
+flags, for example:
+
+```bash
+npx create-better-t-stack@latest my-app --ecosystem python \
+  --python-app fastapi --python-orm sqlalchemy --database postgres \
+  --python-ml pytorch --accelerator cu124 --python-starter
+```
