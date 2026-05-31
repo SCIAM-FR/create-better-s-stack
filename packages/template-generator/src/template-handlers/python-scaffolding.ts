@@ -205,6 +205,23 @@ if __name__ == "__main__":
     main()
 `;
 
+function agentStarter(framework: string): string {
+  return `"""Opt-in agent-loop starter scaffolded by Better-T-Stack.
+
+Built for: ${framework}
+Run with: uv run --extra agents python agent.py
+"""
+
+
+def main() -> None:
+    print("Wire up your ${framework} agent loop here.")
+
+
+if __name__ == "__main__":
+    main()
+`;
+}
+
 /**
  * Opt-in per-pack starters, gated on the parallel `pythonStarter` boolean
  * (never an `examples` value). vllm → a serving entrypoint; heavy train picks →
@@ -215,6 +232,7 @@ export function emitStarters(vfs: VirtualFileSystem, config: Partial<ProjectConf
 
   const genai = config.pythonGenai ?? [];
   const ml = config.pythonMl ?? [];
+  const agents = config.pythonAgents ?? [];
 
   if (genai.includes("vllm")) {
     vfs.writeFile("serve.py", SERVE_STARTER);
@@ -227,5 +245,10 @@ export function emitStarters(vfs: VirtualFileSystem, config: Partial<ProjectConf
     vfs.writeFile("train.py", TRAIN_STARTER);
   } else if (ml.length > 0) {
     vfs.writeFile("train.py", ML_TRAIN_STARTER);
+  }
+
+  // Agents pack (Slice 9): an agent-loop starter for the selected framework.
+  if (agents.length > 0) {
+    vfs.writeFile("agent.py", agentStarter(agents[0]));
   }
 }

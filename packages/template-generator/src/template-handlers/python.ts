@@ -3,6 +3,7 @@ import type { ProjectConfig } from "@better-t-stack/types";
 import { toPythonPackageName } from "../core/template-processor";
 import type { VirtualFileSystem } from "../core/virtual-fs";
 import { GeneratorError } from "../types";
+import { processPythonDeploy } from "./python-deploy";
 import { processPythonPyproject } from "./python-deps";
 import { emitDockerCompose, emitOrmScaffolding, emitStarters } from "./python-scaffolding";
 import { type TemplateData, processTemplatesFromPrefix } from "./utils";
@@ -28,6 +29,7 @@ export function processPythonTemplates(
   emitOrmScaffolding(vfs, config);
   emitDockerCompose(vfs, config);
   emitStarters(vfs, config);
+  processPythonDeploy(vfs, config);
 }
 
 /**
