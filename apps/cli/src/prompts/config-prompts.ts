@@ -29,7 +29,7 @@ import { getAddonsChoice } from "./addons";
 import { getApiChoice } from "./api";
 import { getAuthChoice } from "./auth";
 import { getBackendFrameworkChoice } from "./backend";
-import { getDatabaseChoice } from "./database";
+import { getDatabaseChoice, getPythonDatabaseChoice } from "./database";
 import { getDBSetupChoice } from "./database-setup";
 import { getEcosystemChoice } from "./ecosystem";
 import { getExamplesChoice } from "./examples";
@@ -153,7 +153,7 @@ export async function gatherConfig(
           : getRuntimeChoice(flags.runtime, results.backend),
       database: async ({ results }) =>
         results.ecosystem === "python"
-          ? "none"
+          ? getPythonDatabaseChoice(flags.database)
           : getDatabaseChoice(flags.database, results.backend, results.runtime),
       orm: async ({ results }) =>
         results.ecosystem === "python"
@@ -243,7 +243,12 @@ export async function gatherConfig(
       pythonAgents: ({ results }) =>
         getPythonAgentsChoice(results.ecosystem ?? "ts", flags.pythonAgents),
       accelerator: ({ results }) =>
-        getAcceleratorChoice(results.ecosystem ?? "ts", flags.accelerator),
+        getAcceleratorChoice(
+          results.ecosystem ?? "ts",
+          flags.accelerator,
+          results.pythonMl,
+          results.pythonGenai,
+        ),
       pythonStarter: ({ results }) =>
         getPythonStarterChoice(results.ecosystem ?? "ts", flags.pythonStarter),
     },

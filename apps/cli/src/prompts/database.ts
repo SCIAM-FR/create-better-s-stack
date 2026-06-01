@@ -55,3 +55,28 @@ export async function getDatabaseChoice(database?: Database, backend?: Backend, 
 
   return response;
 }
+
+/**
+ * Database picker for the python ecosystem. SQL-only — MongoDB is unsupported for
+ * python in v1 (validatePythonConstraints) — and defaults to `none` (no DB), so a
+ * python project carries no data layer unless the user opts in. A provided flag
+ * short-circuits the UI.
+ */
+export async function getPythonDatabaseChoice(database?: Database): Promise<Database> {
+  if (database !== undefined) return database;
+
+  const response = await navigableSelect<Database>({
+    message: "Select database",
+    options: [
+      { value: "none", label: "None", hint: "No database" },
+      { value: "sqlite", label: "SQLite", hint: "File-based SQL database" },
+      { value: "postgres", label: "PostgreSQL", hint: "Advanced SQL database" },
+      { value: "mysql", label: "MySQL", hint: "Popular relational database" },
+    ],
+    initialValue: "none",
+  });
+
+  if (isCancel(response)) throw new UserCancelledError({ message: "Operation cancelled" });
+
+  return response;
+}
