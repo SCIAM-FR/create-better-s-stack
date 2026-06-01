@@ -25,7 +25,7 @@ pnpm create @sciam-fr/better-s-stack@latest
 npx @sciam-fr/create-better-s-stack@latest
 ```
 
-Follow the prompts to configure your project or use the `--yes` flag for defaults.
+Follow the prompts to choose an ecosystem and configure your project, or use the `--yes` flag for defaults.
 
 ## Features
 
@@ -54,6 +54,7 @@ Options:
   -V, --version                   Output the version number
   -y, --yes                       Use default configuration
   --template <type>               Use a template (mern, pern, t3, uniwind, none)
+  --ecosystem <type>              Project ecosystem (ts, python)
   --database <type>               Database type (none, sqlite, postgres, mysql, mongodb)
   --orm <type>                    ORM type (none, drizzle, prisma, mongoose)
   --dry-run                       Validate configuration without writing files
@@ -88,6 +89,7 @@ create-better-s-stack create-json --input '{"projectName":"db-app","database":"p
 
 # Runtime schema/introspection output
 create-better-s-stack schema --name all
+create-better-s-stack schema --name ecosystem
 create-better-s-stack schema --name createInput
 create-better-s-stack schema --name addInput
 create-better-s-stack schema --name addonOptions

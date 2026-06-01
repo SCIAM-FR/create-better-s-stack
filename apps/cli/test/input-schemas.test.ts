@@ -129,4 +129,13 @@ describe("Input schemas", () => {
       type: "object",
     });
   });
+
+  it("exposes the ecosystem JSON schema by name", () => {
+    const schemaName = SchemaNameSchema.safeParse("ecosystem");
+
+    expect(schemaName.success).toBe(true);
+    expect(getSchemaResult("ecosystem")).toMatchObject({
+      description: "Top-level project ecosystem discriminator",
+    });
+  });
 });

@@ -31,6 +31,7 @@ async function connectInMemoryClient() {
 function getExplicitCreateInput(projectPath: string) {
   return {
     projectName: projectPath,
+    ecosystem: "ts" as const,
     frontend: ["next"] as const,
     backend: "hono" as const,
     runtime: "bun" as const,
@@ -141,6 +142,8 @@ describe("MCP server", () => {
           requiresExplicitFields?: string[];
           rule?: string;
         };
+        fieldNotes?: Record<string, string>;
+        ambiguityRules?: string[];
       };
     };
 
@@ -148,6 +151,7 @@ describe("MCP server", () => {
     expect(payload.data?.createContract?.requiresExplicitFields).toEqual(
       expect.arrayContaining([
         "projectName",
+        "ecosystem",
         "frontend",
         "backend",
         "runtime",
@@ -165,6 +169,10 @@ describe("MCP server", () => {
         "webDeploy",
         "serverDeploy",
       ]),
+    );
+    expect(payload.data?.fieldNotes?.ecosystem).toContain("top-level workflow discriminator");
+    expect(payload.data?.ambiguityRules).toEqual(
+      expect.arrayContaining([expect.stringContaining("resolve ecosystem first")]),
     );
     expect(payload.data?.createContract?.rule).toContain("full explicit stack config");
   });
@@ -206,8 +214,30 @@ describe("MCP server", () => {
 
     expect(payload.ok).toBe(true);
     expect(payload.data?.type).toBe("object");
+    expect(payload.data?.properties).toHaveProperty("ecosystem");
     expect(payload.data?.properties).toHaveProperty("frontend");
     expect(payload.data?.properties).toHaveProperty("backend");
+  });
+
+  it("returns the ecosystem schema through MCP", async () => {
+    const { client, cleanup } = await connectInMemoryClient();
+    cleanups.push(cleanup);
+
+    const result = await client.callTool({
+      name: "bts_get_schema",
+      arguments: { name: "ecosystem" },
+    });
+
+    const payload = result.structuredContent as {
+      ok: boolean;
+      data?: { anyOf?: Array<{ enum?: string[] }>; enum?: string[] };
+    };
+
+    const values =
+      payload.data?.enum ?? payload.data?.anyOf?.flatMap((schema) => schema.enum ?? []);
+
+    expect(payload.ok).toBe(true);
+    expect(values).toEqual(expect.arrayContaining(["ts", "python"]));
   });
 
   it("rejects partial project payloads before planning", async () => {

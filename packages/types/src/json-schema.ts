@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import {
   DatabaseSchema,
+  EcosystemSchema,
   ORMSchema,
   BackendSchema,
   RuntimeSchema,
@@ -28,6 +29,10 @@ import {
 } from "./schemas";
 
 // Generate JSON schemas for each type
+export function getEcosystemJsonSchema() {
+  return z.toJSONSchema(EcosystemSchema);
+}
+
 export function getDatabaseJsonSchema() {
   return z.toJSONSchema(DatabaseSchema);
 }
@@ -127,6 +132,7 @@ export function getInitResultJsonSchema() {
 // Get all JSON schemas as a single object
 export function getAllJsonSchemas() {
   return {
+    ecosystem: getEcosystemJsonSchema(),
     database: getDatabaseJsonSchema(),
     orm: getORMJsonSchema(),
     backend: getBackendJsonSchema(),

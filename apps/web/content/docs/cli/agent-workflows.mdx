@@ -90,6 +90,7 @@ Use the CLI itself as the source of truth for current input shapes.
 ```bash
 create-better-s-stack schema --name all
 create-better-s-stack schema --name cli
+create-better-s-stack schema --name ecosystem
 create-better-s-stack schema --name createInput
 create-better-s-stack schema --name addInput
 create-better-s-stack schema --name addonOptions
@@ -132,13 +133,14 @@ Recommended MCP workflow:
 
 1. Call `bts_get_stack_guidance` if the user's request is ambiguous.
 2. Call `bts_get_schema` for the exact input shape you need.
-3. Build a full explicit stack config.
+3. Resolve the top-level `ecosystem` first (`ts` or `python`), then build a full explicit stack config.
 4. Call `bts_plan_project` before `bts_create_project`.
 5. For MCP execution, use `install: false` when creating projects.
 6. Call `bts_plan_addons` before `bts_add_addons`.
 
 For project creation, the MCP tools now expect a full explicit config, not a partial payload. That means the agent should provide all major stack choices such as:
 
+- `ecosystem`
 - `frontend`
 - `backend`
 - `runtime`
@@ -158,6 +160,7 @@ For project creation, the MCP tools now expect a full explicit config, not a par
 
 Important field rules:
 
+- `ecosystem` is the top-level workflow discriminator. Use `ts` for TypeScript stacks and `python` for Python apps.
 - `frontend` means app surfaces, not styling choices.
 - `addons` must be an explicit array. Use `[]` when none are requested.
 - `examples` must be an explicit array. Use `[]` when none are requested.

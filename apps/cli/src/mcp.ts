@@ -15,6 +15,7 @@ import {
   DatabaseSetupSchema,
   DbSetupOptionsSchema,
   DirectoryConflictSchema,
+  EcosystemSchema,
   ExamplesSchema,
   FrontendSchema,
   ORMSchema,
@@ -38,6 +39,9 @@ const SchemaToolInputSchema = z.object({
 
 const McpCreateProjectInputSchema = CreateInputSchema.safeExtend({
   projectName: z.string().describe("Project name or relative path"),
+  ecosystem: EcosystemSchema.describe(
+    "Explicit project ecosystem: ts for TypeScript stacks, python for Python apps",
+  ),
   frontend: z
     .array(FrontendSchema)
     .describe("Explicit frontend app surfaces. Do not use native frontends as styling options."),
@@ -131,6 +135,7 @@ function getStackGuidance() {
     createContract: {
       requiresExplicitFields: [
         "projectName",
+        "ecosystem",
         "frontend",
         "backend",
         "runtime",
@@ -152,6 +157,8 @@ function getStackGuidance() {
       rule: "Do not call bts_plan_project or bts_create_project with a partial payload. MCP project creation requires the full explicit stack config.",
     },
     fieldNotes: {
+      ecosystem:
+        "ecosystem is the top-level workflow discriminator. Use 'ts' for TypeScript stacks and 'python' for Python apps. Resolve this before choosing TS-only stack fields or Python app/capability fields.",
       frontend:
         "frontend is for app surfaces only. Choose explicit app targets such as next, react-router, tanstack-router, native-bare, native-uniwind, or native-unistyles.",
       addons: "addons must be an explicit array. Use [] when no addons are requested.",
@@ -170,6 +177,7 @@ function getStackGuidance() {
     },
     ambiguityRules: [
       "If the user request leaves major stack choices unspecified, stop and resolve them before calling bts_plan_project.",
+      "If the user request could mean either a TypeScript stack or a Python app, resolve ecosystem first.",
       "Do not infer extra app surfaces, addons, examples, or provisioning choices from a template name or styling preference.",
       "If the user wants the smallest valid stack, still send the full config with explicit 'none', [] , true, or false values where appropriate.",
       "For MCP execution, scaffold with install=false and let the user or agent run dependency installation separately from a terminal session.",

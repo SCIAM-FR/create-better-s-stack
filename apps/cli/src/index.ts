@@ -68,6 +68,7 @@ export const SchemaNameSchema = z
   .enum([
     "all",
     "cli",
+    "ecosystem",
     "database",
     "orm",
     "backend",
