@@ -1,6 +1,6 @@
 {
   "name": "@better-s-stack/template-generator",
-  "version": "3.30.3",
+  "version": "3.30.4",
   "description": "Virtual file system generator for Better-S-Stack templates - works in browsers and Node.js",
   "keywords": [
     "better-t-stack",
