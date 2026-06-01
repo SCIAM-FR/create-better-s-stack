@@ -1,4 +1,15 @@
 pre-commit:
   commands:
-    lint-staged:
-      run: bunx lint-staged
+    # Equivalent to the previous `lint-staged` step (`oxfmt` + `oxlint` on staged
+    # files, auto-fixing formatting and re-staging it), but driven by lefthook's
+    # native {staged_files} so it avoids lint-staged's stash-backup step, which is
+    # unreliable on some platforms (ENAMETOOLONG / "Needed a single revision").
+    # `format` runs before `lint` (alphabetical order); `stage_fixed` re-stages
+    # files oxfmt rewrote.
+    format:
+      glob: "*.{js,jsx,mjs,cjs,ts,tsx,mts,cts,json,jsonc}"
+      run: bunx oxfmt {staged_files}
+      stage_fixed: true
+    lint:
+      glob: "*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}"
+      run: bunx oxlint {staged_files}
