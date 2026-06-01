@@ -1,6 +1,6 @@
 {
   "name": "create-bts",
-  "version": "3.30.4",
+  "version": "3.31.0",
   "private": true,
   "description": "A modern CLI tool for scaffolding end-to-end type-safe TypeScript projects with best practices and customizable configurations (alias for create-better-s-stack)",
   "keywords": [
