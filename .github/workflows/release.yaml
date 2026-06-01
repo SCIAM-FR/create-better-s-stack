@@ -4,6 +4,15 @@ on:
   push:
     branches:
       - main
+  # Manual trigger from the Actions tab — useful on a fork (where the push
+  # event may not auto-run) and for re-releasing without a new commit. The
+  # version defaults to apps/cli/package.json when left blank.
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release (x.y.z). Blank = use apps/cli/package.json."
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -18,7 +27,7 @@ concurrency:
 jobs:
   release:
     name: Release to GitHub Packages
-    if: startsWith(github.event.head_commit.message, 'chore(release):')
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.event.head_commit.message, 'chore(release):')
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -45,10 +54,18 @@ jobs:
           //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
           EOF
 
-      - name: Extract version from commit message
+      # Resolve the version from (in order): the manual workflow_dispatch input,
+      # the chore(release): commit subject, then apps/cli/package.json.
+      - name: Resolve version
         id: version
         run: |
-          VERSION=$(git log -1 --pretty=%s | sed -nE 's/^chore\(release\): ([0-9]+\.[0-9]+\.[0-9]+).*/\1/p')
+          VERSION="${{ github.event.inputs.version }}"
+          if [ -z "$VERSION" ]; then
+            VERSION=$(git log -1 --pretty=%s | sed -nE 's/^chore\(release\): ([0-9]+\.[0-9]+\.[0-9]+).*/\1/p')
+          fi
+          if [ -z "$VERSION" ]; then
+            VERSION=$(node -p "require('./apps/cli/package.json').version")
+          fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Releasing version: $VERSION"
 
