@@ -1,31 +1,31 @@
 export const dynamic = "force-static";
 
-import { api } from "@better-t-stack/backend/convex/_generated/api";
+import { api } from "@better-s-stack/backend/convex/_generated/api";
 import { fetchQuery } from "convex/nextjs";
 import type { Metadata } from "next";
 
 import { ShowcasePage } from "./_components/showcase-page";
 
 export const metadata: Metadata = {
-  title: "Showcase - Better-T-Stack",
-  description: "Projects created with Better-T-Stack",
+  title: "Showcase - Better-S-Stack",
+  description: "Projects created with Better-S-Stack",
   openGraph: {
-    title: "Showcase - Better-T-Stack",
-    description: "Projects created with Better-T-Stack",
-    url: "https://better-t-stack.dev/showcase",
+    title: "Showcase - Better-S-Stack",
+    description: "Projects created with Better-S-Stack",
+    url: "https://better-s-stack.sciam.fr/showcase",
     images: [
       {
         url: "https://r2.better-t-stack.dev/og.png",
         width: 1200,
         height: 630,
-        alt: "Better-T-Stack Showcase",
+        alt: "Better-S-Stack Showcase",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Showcase - Better-T-Stack",
-    description: "Projects created with Better-T-Stack",
+    title: "Showcase - Better-S-Stack",
+    description: "Projects created with Better-S-Stack",
     images: ["https://r2.better-t-stack.dev/og.png"],
   },
 };

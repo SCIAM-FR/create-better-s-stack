@@ -1,1 +1,1 @@
-export * from "create-better-t-stack";
+export * from "@sciam-fr/create-better-s-stack";

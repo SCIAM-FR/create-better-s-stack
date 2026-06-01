@@ -1,8 +1,8 @@
 import os from "node:os";
 import path from "node:path";
 
-import { generate, EMBEDDED_TEMPLATES } from "@better-t-stack/template-generator";
-import { writeTree } from "@better-t-stack/template-generator/fs-writer";
+import { generate, EMBEDDED_TEMPLATES } from "@better-s-stack/template-generator";
+import { writeTree } from "@better-s-stack/template-generator/fs-writer";
 import { log } from "@clack/prompts";
 import { Result } from "better-result";
 import { $ } from "execa";

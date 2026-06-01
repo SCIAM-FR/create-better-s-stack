@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-import("create-better-t-stack/cli");
+import("@sciam-fr/create-better-s-stack/cli");

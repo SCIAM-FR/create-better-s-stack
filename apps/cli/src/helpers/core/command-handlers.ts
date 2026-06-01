@@ -1,6 +1,6 @@
 import path from "node:path";
 
-import { generateReproducibleCommand } from "@better-t-stack/template-generator";
+import { generateReproducibleCommand } from "@better-s-stack/template-generator";
 import { intro, log, outro } from "@clack/prompts";
 import { Result, UnhandledException } from "better-result";
 import fs from "fs-extra";
@@ -161,7 +161,7 @@ async function createProjectHandlerInternal(
     if (!isSilent() && input.renderTitle !== false) {
       renderTitle();
     }
-    if (!isSilent()) intro(pc.magenta("Creating a new Better-T-Stack project"));
+    if (!isSilent()) intro(pc.magenta("Creating a new Better-S-Stack project"));
 
     if (!isSilent() && input.yolo) {
       cliConsola.fatal("YOLO mode enabled - skipping checks. Things may break!");

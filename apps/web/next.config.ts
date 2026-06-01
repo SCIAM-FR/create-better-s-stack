@@ -28,7 +28,12 @@ const config: NextConfig = {
   experimental: {
     turbopackFileSystemCacheForDev: true,
   },
-  serverExternalPackages: ["create-better-t-stack", "fs-extra", "tinyglobby", "handlebars"],
+  serverExternalPackages: [
+    "@sciam-fr/create-better-s-stack",
+    "fs-extra",
+    "tinyglobby",
+    "handlebars",
+  ],
 };
 
 export default withMDX(config);

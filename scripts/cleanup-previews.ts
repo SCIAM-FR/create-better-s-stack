@@ -2,10 +2,10 @@ import { confirm, isCancel, multiselect, spinner } from "@clack/prompts";
 import { $ } from "bun";
 
 const PACKAGES = [
-  "create-better-t-stack",
+  "create-better-s-stack",
   "create-bts",
-  "@better-t-stack/types",
-  "@better-t-stack/template-generator",
+  "@better-s-stack/types",
+  "@better-s-stack/template-generator",
 ] as const;
 
 interface DistTags {

@@ -1,4 +1,4 @@
-import type { BetterTStackConfig, ProjectConfig } from "@better-t-stack/types";
+import type { BetterTStackConfig, ProjectConfig } from "@better-s-stack/types";
 
 import type { VirtualFileSystem } from "./core/virtual-fs";
 
@@ -53,18 +53,18 @@ export function writeBtsConfigToVfs(
 
   const addCommand =
     projectConfig.packageManager === "npm"
-      ? "npx create-better-t-stack add"
+      ? "npx @sciam-fr/create-better-s-stack add"
       : projectConfig.packageManager === "pnpm"
-        ? "pnpm dlx create-better-t-stack add"
-        : "bun create better-t-stack add";
+        ? "pnpm dlx @sciam-fr/create-better-s-stack add"
+        : "bunx @sciam-fr/create-better-s-stack add";
 
-  const finalContent = `// Better-T-Stack
+  const finalContent = `// Better-S-Stack
 //
-// Website: https://www.better-t-stack.dev/
-// Stack Builder: https://www.better-t-stack.dev/new
-// Analytics: https://www.better-t-stack.dev/analytics
-// Showcase: https://www.better-t-stack.dev/showcase
-// Sponsor: https://github.com/sponsors/AmanVarshney01
+// Website: https://better-s-stack.sciam.fr/
+// Stack Builder: https://better-s-stack.sciam.fr/new
+// Analytics: https://better-s-stack.sciam.fr/analytics
+// Showcase: https://better-s-stack.sciam.fr/showcase
+// Sponsor: https://github.com/sponsors/SCIAM-FR
 //
 // Add new addons with: ${addCommand}
 // This file is safe to delete

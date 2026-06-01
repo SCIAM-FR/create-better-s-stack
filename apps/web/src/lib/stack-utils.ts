@@ -116,9 +116,9 @@ export function getDesktopBuildNote(stack: Pick<StackState, "addons" | "webFront
 
 export function generateStackCommand(stack: StackState) {
   const packageManagerCommands = {
-    npm: "npx create-better-t-stack@latest",
-    pnpm: "pnpm create better-t-stack@latest",
-    default: "bun create better-t-stack@latest",
+    npm: "npx @sciam-fr/create-better-s-stack@latest",
+    pnpm: "pnpm create @sciam-fr/better-s-stack@latest",
+    default: "bun create @sciam-fr/better-s-stack@latest",
   };
 
   const base =
@@ -126,8 +126,10 @@ export function generateStackCommand(stack: StackState) {
     packageManagerCommands.default;
   const projectName = stack.projectName || "my-better-t-app";
 
-  // Python ecosystem command form (plan Slice 11 / §12). The CLI is run via npx
-  // for uv projects (you don't install the CLI through uv).
+  // Python ecosystem command form (plan Slice 11 / §12). The scaffolder is run
+  // through the same JS package-manager runner as TypeScript projects
+  // (`bun create better-s-stack@latest` by default); uv is only used for the
+  // generated Python project itself, never to bootstrap the CLI.
   if (stack.ecosystem === "python") {
     const picked = (arr: string[]) => arr.filter((id) => id !== "none");
     const pyFlags = [
@@ -148,7 +150,7 @@ export function generateStackCommand(stack: StackState) {
     pyFlags.push(stack.git === "false" ? "--no-git" : "--git");
     pyFlags.push(stack.install === "false" ? "--no-install" : "--install");
     if (stack.yolo === "true") pyFlags.push("--yolo");
-    return `npx create-better-t-stack@latest ${projectName} ${pyFlags.join(" ")}`;
+    return `${base} ${projectName} ${pyFlags.join(" ")}`;
   }
 
   const isStackDefaultExceptProjectName = Object.entries(DEFAULT_STACK).every(
@@ -232,7 +234,7 @@ export function generateStackCommand(stack: StackState) {
 }
 
 export function generateStackUrlFromState(stack: StackState, baseUrl?: string) {
-  const origin = baseUrl || "https://better-t-stack.dev";
+  const origin = baseUrl || "https://better-s-stack.sciam.fr";
 
   const stackParams = new URLSearchParams();
   Object.entries(stackUrlKeys).forEach(([stackKey, urlKey]) => {
@@ -247,7 +249,7 @@ export function generateStackUrlFromState(stack: StackState, baseUrl?: string) {
 }
 
 export function generateStackSharingUrl(stack: StackState, baseUrl?: string) {
-  const origin = baseUrl || "https://better-t-stack.dev";
+  const origin = baseUrl || "https://better-s-stack.sciam.fr";
 
   const stackParams = new URLSearchParams();
   Object.entries(stackUrlKeys).forEach(([stackKey, urlKey]) => {

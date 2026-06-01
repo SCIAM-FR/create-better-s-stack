@@ -14892,7 +14892,7 @@ lerna-debug.log*
 .turbo
 .nx
 
-# Better-T-Stack
+# Better-S-Stack
 .alchemy
 
 # Testing
@@ -25696,7 +25696,7 @@ return (
 <Container className="px-4 pb-4">
   <View className="py-6 mb-5">
     <Text className="text-3xl font-semibold text-foreground tracking-tight">
-      Better T Stack
+      Better S Stack
     </Text>
     <Text className="text-muted text-sm mt-1">Full-stack TypeScript starter</Text>
   </View>
@@ -31095,7 +31095,7 @@ def health() -> dict[str, str]:
   ["python/fastapi/pyproject.toml.hbs", `[project]
 name = "{{projectName}}"
 version = "0.1.0"
-description = "A FastAPI service scaffolded with Better-T-Stack"
+description = "A FastAPI service scaffolded with Better-S-Stack"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -31112,7 +31112,7 @@ pythonpath = ["."]
 `],
   ["python/fastapi/README.md.hbs", `# {{projectName}}
 
-A [FastAPI](https://fastapi.tiangolo.com) service scaffolded with [Better-T-Stack](https://better-t-stack.dev).
+A [FastAPI](https://fastapi.tiangolo.com) service scaffolded with [Better-S-Stack](https://better-s-stack.sciam.fr).
 
 ## Getting started
 
@@ -31221,7 +31221,7 @@ pythonpath = ["."]
   ["python/fastapi+streamlit/pyproject.toml.hbs", `[project]
 name = "{{projectName}}"
 version = "0.1.0"
-description = "A FastAPI + Streamlit uv workspace scaffolded with Better-T-Stack"
+description = "A FastAPI + Streamlit uv workspace scaffolded with Better-S-Stack"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -31247,7 +31247,7 @@ dev = [
 `],
   ["python/fastapi+streamlit/README.md.hbs", `# {{projectName}}
 
-A [FastAPI](https://fastapi.tiangolo.com) + [Streamlit](https://streamlit.io) [uv workspace](https://docs.astral.sh/uv/concepts/projects/workspaces/) scaffolded with [Better-T-Stack](https://better-t-stack.dev).
+A [FastAPI](https://fastapi.tiangolo.com) + [Streamlit](https://streamlit.io) [uv workspace](https://docs.astral.sh/uv/concepts/projects/workspaces/) scaffolded with [Better-S-Stack](https://better-s-stack.sciam.fr).
 
 Two apps, one shared environment and lockfile:
 
@@ -31320,7 +31320,7 @@ def get():
     return Titled(
         "{{projectName}}",
         H1("{{projectName}}"),
-        P("Welcome to your FastHTML app, scaffolded with Better-T-Stack."),
+        P("Welcome to your FastHTML app, scaffolded with Better-S-Stack."),
     )
 
 
@@ -31329,7 +31329,7 @@ serve()
   ["python/fasthtml/pyproject.toml.hbs", `[project]
 name = "{{projectName}}"
 version = "0.1.0"
-description = "A FastHTML app scaffolded with Better-T-Stack"
+description = "A FastHTML app scaffolded with Better-S-Stack"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -31347,7 +31347,7 @@ pythonpath = ["."]
 `],
   ["python/fasthtml/README.md.hbs", `# {{projectName}}
 
-A [FastHTML](https://fastht.ml) app scaffolded with [Better-T-Stack](https://better-t-stack.dev).
+A [FastHTML](https://fastht.ml) app scaffolded with [Better-S-Stack](https://better-s-stack.sciam.fr).
 
 With FastHTML the UI *is* the server — one process renders the HTML and runs your Python.
 
@@ -31431,7 +31431,7 @@ if __name__ == "__main__":
   ["python/gradio/pyproject.toml.hbs", `[project]
 name = "{{projectName}}"
 version = "0.1.0"
-description = "A Gradio app scaffolded with Better-T-Stack"
+description = "A Gradio app scaffolded with Better-S-Stack"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -31448,7 +31448,7 @@ pythonpath = ["."]
 `],
   ["python/gradio/README.md.hbs", `# {{projectName}}
 
-A [Gradio](https://www.gradio.app) app scaffolded with [Better-T-Stack](https://better-t-stack.dev).
+A [Gradio](https://www.gradio.app) app scaffolded with [Better-S-Stack](https://better-s-stack.sciam.fr).
 
 With Gradio the UI *is* the server — one process serves the interface and runs your Python.
 
@@ -31508,7 +31508,7 @@ dist/
   ["python/library/pyproject.toml.hbs", `[project]
 name = "{{projectName}}"
 version = "0.1.0"
-description = "A Python project scaffolded with Better-T-Stack"
+description = "A Python project scaffolded with Better-S-Stack"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = []
@@ -31522,7 +31522,7 @@ packages = ["src/{{pyPackage projectName}}"]
 `],
   ["python/library/README.md.hbs", `# {{projectName}}
 
-A Python library scaffolded with [Better-T-Stack](https://better-t-stack.dev).
+A Python library scaffolded with [Better-S-Stack](https://better-s-stack.sciam.fr).
 
 ## Getting started
 
@@ -31566,7 +31566,7 @@ dist/
   ["python/streamlit/app.py.hbs", `import streamlit as st
 
 st.title("{{projectName}}")
-st.write("Welcome to your Streamlit app, scaffolded with Better-T-Stack.")
+st.write("Welcome to your Streamlit app, scaffolded with Better-S-Stack.")
 
 name = st.text_input("What is your name?", value="world")
 st.write(f"Hello, {name}!")
@@ -31574,7 +31574,7 @@ st.write(f"Hello, {name}!")
   ["python/streamlit/pyproject.toml.hbs", `[project]
 name = "{{projectName}}"
 version = "0.1.0"
-description = "A Streamlit app scaffolded with Better-T-Stack"
+description = "A Streamlit app scaffolded with Better-S-Stack"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -31591,7 +31591,7 @@ pythonpath = ["."]
 `],
   ["python/streamlit/README.md.hbs", `# {{projectName}}
 
-A [Streamlit](https://streamlit.io) app scaffolded with [Better-T-Stack](https://better-t-stack.dev).
+A [Streamlit](https://streamlit.io) app scaffolded with [Better-S-Stack](https://better-s-stack.sciam.fr).
 
 With Streamlit the UI *is* the server — one process renders the interface and runs your Python.
 

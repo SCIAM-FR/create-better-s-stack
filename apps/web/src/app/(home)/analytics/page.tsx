@@ -1,29 +1,29 @@
-import { api } from "@better-t-stack/backend/convex/_generated/api";
+import { api } from "@better-s-stack/backend/convex/_generated/api";
 import { preloadQuery } from "convex/nextjs";
 import type { Metadata } from "next";
 
 import { AnalyticsClient } from "./analytics-client";
 
 export const metadata: Metadata = {
-  title: "Analytics - Better-T-Stack",
-  description: "Convex-backed project creation analytics for Better-T-Stack.",
+  title: "Analytics - Better-S-Stack",
+  description: "Convex-backed project creation analytics for Better-S-Stack.",
   openGraph: {
-    title: "Analytics - Better-T-Stack",
-    description: "Convex-backed project creation analytics for Better-T-Stack.",
-    url: "https://better-t-stack.dev/analytics",
+    title: "Analytics - Better-S-Stack",
+    description: "Convex-backed project creation analytics for Better-S-Stack.",
+    url: "https://better-s-stack.sciam.fr/analytics",
     images: [
       {
         url: "https://r2.better-t-stack.dev/og.png",
         width: 1200,
         height: 630,
-        alt: "Better-T-Stack Convex Analytics",
+        alt: "Better-S-Stack Convex Analytics",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Analytics - Better-T-Stack",
-    description: "Convex-backed project creation analytics for Better-T-Stack.",
+    title: "Analytics - Better-S-Stack",
+    description: "Convex-backed project creation analytics for Better-S-Stack.",
     images: ["https://r2.better-t-stack.dev/og.png"],
   },
 };

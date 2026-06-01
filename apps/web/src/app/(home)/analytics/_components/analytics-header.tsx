@@ -100,7 +100,7 @@ export function AnalyticsHeader({
           <div className="min-w-0">
             <h1 className="font-bold font-mono text-lg sm:text-xl">ANALYTICS.SH</h1>
             <p className="text-muted-foreground text-sm">
-              Aggregate CLI telemetry for create-better-t-stack.
+              Aggregate CLI telemetry for create-better-s-stack.
             </p>
           </div>
         </div>

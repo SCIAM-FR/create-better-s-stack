@@ -1,6 +1,6 @@
-# Better T Stack
+# Better S Stack
 
-Better T Stack is a project scaffolding CLI that turns a stack selection into a reproducible TypeScript starter project.
+Better S Stack is a project scaffolding CLI that turns a stack selection into a reproducible TypeScript starter project.
 
 ## Language
 
@@ -69,11 +69,11 @@ The CLI workflow that turns a project configuration into a new scaffolded projec
 _Avoid_: Init path, generation path
 
 **Add Path**:
-The CLI workflow that adds capabilities to an existing Better T Stack project.
+The CLI workflow that adds capabilities to an existing Better S Stack project.
 _Avoid_: Update path, addon install path
 
 **MCP Surface**:
-The Model Context Protocol server and tools that expose Better T Stack planning, creation, addon, guidance, and schema operations to agents.
+The Model Context Protocol server and tools that expose Better S Stack planning, creation, addon, guidance, and schema operations to agents.
 _Avoid_: MCP addon
 
 ## Relationships

@@ -1,4 +1,4 @@
-import type { ProjectConfig } from "@better-t-stack/types";
+import type { ProjectConfig } from "@better-s-stack/types";
 import { Node, Project, SyntaxKind } from "ts-morph";
 
 import type { VirtualFileSystem } from "../core/virtual-fs";

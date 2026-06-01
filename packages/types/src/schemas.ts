@@ -622,8 +622,8 @@ export const BetterTStackConfigFileSchema = z
   .strict()
   .meta({
     id: "https://r2.better-t-stack.dev/schema.json",
-    title: "Better-T-Stack Configuration",
-    description: "Configuration file for Better-T-Stack projects",
+    title: "Better-S-Stack Configuration",
+    description: "Configuration file for Better-S-Stack projects",
   });
 
 export const InitResultSchema = z.object({

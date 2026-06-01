@@ -18,9 +18,9 @@ export default function CommandSection() {
   const [selectedPM, setSelectedPM] = useState<"npm" | "pnpm" | "bun">("bun");
 
   const commands = {
-    npm: "npx create-better-t-stack@latest",
-    pnpm: "pnpm create better-t-stack@latest",
-    bun: "bun create better-t-stack@latest",
+    npm: "npx @sciam-fr/create-better-s-stack@latest",
+    pnpm: "pnpm create @sciam-fr/better-s-stack@latest",
+    bun: "bun create @sciam-fr/better-s-stack@latest",
   };
 
   const copyCommand = (command: string, packageManager: string) => {

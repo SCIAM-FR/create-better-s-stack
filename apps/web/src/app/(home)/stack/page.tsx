@@ -12,7 +12,7 @@ interface StackPageProps {
 export async function generateMetadata({ searchParams }: StackPageProps): Promise<Metadata> {
   const params = await loadStackParams(searchParams);
   const projectName = params.projectName || "my-better-t-app";
-  const title = `${projectName} – Better-T-Stack`;
+  const title = `${projectName} – Better-S-Stack`;
   return {
     title,
     description: "View and share your custom tech stack configuration",
@@ -22,13 +22,13 @@ export async function generateMetadata({ searchParams }: StackPageProps): Promis
     openGraph: {
       title,
       description: "View and share your custom tech stack configuration",
-      url: "https://better-t-stack.dev/stack",
+      url: "https://better-s-stack.sciam.fr/stack",
       images: [
         {
           url: "https://r2.better-t-stack.dev/og.png",
           width: 1200,
           height: 630,
-          alt: "Better-T-Stack Tech Stack",
+          alt: "Better-S-Stack Tech Stack",
         },
       ],
     },

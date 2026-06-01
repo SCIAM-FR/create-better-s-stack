@@ -49,7 +49,8 @@ export default function HeroSection() {
 
       <div className="text-center">
         <p className="mx-auto max-w-3xl font-mono text-base text-muted-foreground sm:text-lg">
-          Modern CLI for scaffolding end-to-end type-safe TypeScript projects
+          The SCIAM CLI for scaffolding production-ready, end-to-end type-safe full-stack projects —
+          TypeScript and Python.
         </p>
         <NpmPackage />
       </div>

@@ -1,4 +1,4 @@
-import type { ProjectConfig } from "@better-t-stack/types";
+import type { ProjectConfig } from "@better-s-stack/types";
 
 import type { VirtualFileSystem } from "../core/virtual-fs";
 import { getDbScriptSupport } from "../utils/db-scripts";
@@ -181,7 +181,7 @@ function generateReadmeContent(options: ProjectConfig): string {
 
   return `# ${projectName}
 
-This project was created with [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack), a modern TypeScript stack${
+This project was created with [Better-S-Stack](https://github.com/SCIAM-FR/create-better-s-stack), a modern TypeScript stack${
     stackDescription ? ` that combines ${stackDescription}` : ""
   }.
 
@@ -748,7 +748,7 @@ function generateDeploymentCommands(
 
   lines.push(
     "",
-    "For more details, see the guide on [Deploying to Cloudflare with Alchemy](https://www.better-t-stack.dev/docs/guides/cloudflare-alchemy).",
+    "For more details, see the guide on [Deploying to Cloudflare with Alchemy](https://better-s-stack.sciam.fr/docs/guides/cloudflare-alchemy).",
   );
 
   return `${lines.join("\n")}\n`;

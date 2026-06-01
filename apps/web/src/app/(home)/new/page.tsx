@@ -6,24 +6,24 @@ import { fetchSponsors } from "@/lib/sponsors";
 import { StackBuilder } from "./_components/stack-builder";
 
 export const metadata: Metadata = {
-  title: "Stack Builder - Better-T-Stack",
+  title: "Stack Builder - Better-S-Stack",
   description: "Interactive Ui to roll your own stack",
   openGraph: {
-    title: "Stack Builder - Better-T-Stack",
+    title: "Stack Builder - Better-S-Stack",
     description: "Interactive Ui to roll your own stack",
-    url: "https://better-t-stack.dev/new",
+    url: "https://better-s-stack.sciam.fr/new",
     images: [
       {
         url: "https://r2.better-t-stack.dev/og.png",
         width: 1200,
         height: 630,
-        alt: "Better-T-Stack Stack Builder",
+        alt: "Better-S-Stack Stack Builder",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Stack Builder - Better-T-Stack",
+    title: "Stack Builder - Better-S-Stack",
     description: "Interactive Ui to roll your own stack",
     images: ["https://r2.better-t-stack.dev/og.png"],
   },

@@ -1,0 +1,21 @@
+[project]
+name = "ws-verify"
+version = "0.1.0"
+description = "A FastAPI + Streamlit uv workspace scaffolded with Better-T-Stack"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["ws-verify-api", "ws-verify-app"]
+
+# Capability-pack extras aggregate here so `uv sync --extra <pack>` resolves
+# from the workspace root (ml / genai / agents land in later slices).
+[project.optional-dependencies]
+
+[tool.uv.workspace]
+members = ["apps/*"]
+
+[tool.uv.sources]
+"ws-verify-api" = { workspace = true }
+"ws-verify-app" = { workspace = true }
+
+[dependency-groups]
+dev = ["pytest>=8"]

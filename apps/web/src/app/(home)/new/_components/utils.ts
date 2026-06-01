@@ -1,4 +1,4 @@
-import { desktopWebFrontends } from "@better-t-stack/types";
+import { desktopWebFrontends } from "@better-s-stack/types";
 
 import { DEFAULT_STACK, type StackState, type TECH_OPTIONS } from "@/lib/constant";
 import { getCategoryOrder } from "@/lib/stack-utils";

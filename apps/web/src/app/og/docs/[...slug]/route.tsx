@@ -140,13 +140,13 @@ export async function GET(_req: Request, { params }: RouteContext<"/og/docs/[...
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <span
               style={{
-                color: "#cba6f7",
+                color: "#9db2d6",
                 fontSize: "18px",
                 fontWeight: 600,
                 display: "flex",
               }}
             >
-              Better-T Stack
+              Better-S Stack
             </span>
             <span style={{ color: "#313244", fontSize: "18px", display: "flex" }}>/</span>
             <span style={{ color: "#585b70", fontSize: "16px", display: "flex" }}>docs</span>
@@ -159,7 +159,7 @@ export async function GET(_req: Request, { params }: RouteContext<"/og/docs/[...
               display: "flex",
             }}
           >
-            better-t-stack.dev
+            better-s-stack.sciam.fr
           </div>
         </div>
       </div>

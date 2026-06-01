@@ -1,7 +1,8 @@
 {
   "name": "create-bts",
   "version": "3.30.3",
-  "description": "A modern CLI tool for scaffolding end-to-end type-safe TypeScript projects with best practices and customizable configurations (alias for create-better-t-stack)",
+  "private": true,
+  "description": "A modern CLI tool for scaffolding end-to-end type-safe TypeScript projects with best practices and customizable configurations (alias for create-better-s-stack)",
   "keywords": [
     "better-auth",
     "better-t-stack",
@@ -29,12 +30,12 @@
     "type-safety",
     "typescript"
   ],
-  "homepage": "https://better-t-stack.dev/",
+  "homepage": "https://better-s-stack.sciam.fr/",
   "license": "MIT",
   "author": "Aman Varshney",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AmanVarshney01/create-better-t-stack.git",
+    "url": "git+https://github.com/SCIAM-FR/create-better-s-stack.git",
     "directory": "packages/create-bts"
   },
   "bin": {
@@ -62,6 +63,6 @@
     "access": "public"
   },
   "dependencies": {
-    "create-better-t-stack": "^3.30.3"
+    "@sciam-fr/create-better-s-stack": "workspace:*"
   }
 }

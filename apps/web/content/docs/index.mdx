@@ -1,6 +1,6 @@
 ---
 title: Quick Start
-description: Create your first Better-T-Stack project in minutes
+description: Create your first Better-S-Stack project in minutes
 ---
 
 ## Philosophy
@@ -18,10 +18,29 @@ description: Create your first Better-T-Stack project in minutes
 - **Git** (optional) - [Download from git-scm.com](https://git-scm.com/) - if you want to initialize a git repository
 - **Bun** (optional) - [Download from bun.com](https://bun.com/) - if you want to use Bun as your package manager
 
+### Authentication (private registry)
+
+The CLI is published privately to **GitHub Packages** under the `@sciam-fr` scope.
+Before running it, authenticate once: create a [GitHub personal access token](https://github.com/settings/tokens)
+with the `read:packages` scope, then add the `@sciam-fr` scope to your `.npmrc`
+(in `~/.npmrc` for all projects, or the project root):
+
+```ini title=".npmrc"
+@sciam-fr:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
+```
+
+Export the token so npm/bun/pnpm can read it (`${GITHUB_TOKEN}` is expanded at
+runtime — the token never lands in the file):
+
+```bash
+export GITHUB_TOKEN=ghp_your_token_here
+```
+
 ### CLI (prompts)
 
 ```npm
-npm create better-t-stack@latest
+npm create @sciam-fr/better-s-stack@latest
 ```
 
 Follow the interactive prompts to choose your frontend, backend, database, ORM, API layer, and addons.
@@ -29,7 +48,7 @@ Follow the interactive prompts to choose your frontend, backend, database, ORM, 
 Skip prompts and use the default stack:
 
 ```npm
-npm create better-t-stack@latest --yes
+npm create @sciam-fr/better-s-stack@latest --yes
 ```
 
 ### Stack Builder (UI)
@@ -38,7 +57,7 @@ npm create better-t-stack@latest --yes
 - Or open it via:
 
 ```npm
-npm create better-t-stack@latest builder
+npm create @sciam-fr/better-s-stack@latest builder
 ```
 
 ## Common Setups
@@ -46,7 +65,7 @@ npm create better-t-stack@latest builder
 ### Default Stack
 
 ```npm
-npm create better-t-stack@latest my-webapp \
+npm create @sciam-fr/better-s-stack@latest my-webapp \
   --frontend tanstack-router \
   --backend hono \
   --database sqlite \
@@ -58,7 +77,7 @@ npm create better-t-stack@latest my-webapp \
 ### Convex + React + Clerk
 
 ```npm
-npm create better-t-stack@latest my-api \
+npm create @sciam-fr/better-s-stack@latest my-api \
   --frontend tanstack-router \
   --backend convex \
   --auth clerk
@@ -67,7 +86,7 @@ npm create better-t-stack@latest my-api \
 ### Mobile App (Expo)
 
 ```npm
-npm create better-t-stack@latest my-native \
+npm create @sciam-fr/better-s-stack@latest my-native \
   --frontend native-uniwind \
   --backend hono \
   --database sqlite \
@@ -78,7 +97,7 @@ npm create better-t-stack@latest my-native \
 ### Empty Monorepo
 
 ```npm
-npm create better-t-stack@latest my-workspace \
+npm create @sciam-fr/better-s-stack@latest my-workspace \
   --frontend none \
   --backend none
 ```

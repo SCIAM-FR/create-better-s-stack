@@ -5,8 +5,8 @@ import {
   processAddonTemplates,
   processAddonsDeps,
   VirtualFileSystem,
-} from "@better-t-stack/template-generator";
-import { writeTree } from "@better-t-stack/template-generator/fs-writer";
+} from "@better-s-stack/template-generator";
+import { writeTree } from "@better-s-stack/template-generator/fs-writer";
 import { intro, log, outro } from "@clack/prompts";
 import { Result } from "better-result";
 import fs from "fs-extra";
@@ -127,7 +127,7 @@ async function addHandlerInternal(
 
   if (!isSilent()) {
     renderTitle();
-    intro(pc.magenta("Add addons to your Better-T-Stack project"));
+    intro(pc.magenta("Add addons to your Better-S-Stack project"));
   }
 
   // Detect existing project configuration
@@ -136,7 +136,7 @@ async function addHandlerInternal(
   if (!existingConfig) {
     return Result.err(
       new CLIError({
-        message: `No Better-T-Stack project found in ${projectDir}. Make sure bts.jsonc exists.`,
+        message: `No Better-S-Stack project found in ${projectDir}. Make sure bts.jsonc exists.`,
       }),
     );
   }

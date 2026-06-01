@@ -325,7 +325,8 @@ describe("stack builder python ecosystem", () => {
     expect(command).toContain("--accelerator cu124");
     expect(command).toContain("--python-starter");
     expect(command).toContain("--package-manager uv");
-    expect(command.startsWith("npx create-better-t-stack@latest")).toBe(true);
+    // Python uses the same JS-runner bootstrap as TypeScript; default pm is bun.
+    expect(command.startsWith("bun create @sciam-fr/better-s-stack@latest")).toBe(true);
   });
 
   test("rejects MongoDB in python mode (SQL only)", () => {

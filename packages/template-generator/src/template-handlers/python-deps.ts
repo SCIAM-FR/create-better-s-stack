@@ -6,7 +6,7 @@ import type {
   PythonGenai,
   PythonMl,
   PythonOrm,
-} from "@better-t-stack/types";
+} from "@better-s-stack/types";
 
 /**
  * Pure dependency-resolution helpers for the python capability packs

@@ -9,6 +9,7 @@ permissions:
   contents: write
   pull-requests: write
   id-token: write
+  packages: write
 
 concurrency:
   group: release-${{ github.ref }}
@@ -16,7 +17,7 @@ concurrency:
 
 jobs:
   release:
-    name: Release to NPM
+    name: Release to GitHub Packages
     if: startsWith(github.event.head_commit.message, 'chore(release):')
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -31,8 +32,18 @@ jobs:
         with:
           node-version-file: package.json
           check-latest: true
-          registry-url: https://registry.npmjs.org
           package-manager-cache: false
+
+      # Redirect only the @sciam-fr scope to GitHub Packages and leave the
+      # default npm registry alone (public deps must still resolve normally).
+      # The ${NODE_AUTH_TOKEN} placeholder is expanded by npm at runtime — the
+      # token is never written to disk.
+      - name: Configure GitHub Packages auth (scoped to @sciam-fr)
+        run: |
+          cat > "$HOME/.npmrc" <<'EOF'
+          @sciam-fr:registry=https://npm.pkg.github.com
+          //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
+          EOF
 
       - name: Extract version from commit message
         id: version
@@ -51,10 +62,12 @@ jobs:
 
       - name: Check if version already exists
         id: check-version
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          if npm view create-better-t-stack@$VERSION version 2>/dev/null; then
-            echo "Version $VERSION already exists on NPM"
+          if npm view @sciam-fr/create-better-s-stack@$VERSION version 2>/dev/null; then
+            echo "Version $VERSION already exists on GitHub Packages"
             echo "exists=true" >> $GITHUB_OUTPUT
           else
             echo "Version $VERSION is new"
@@ -71,87 +84,42 @@ jobs:
         if: steps.check-version.outputs.exists == 'false'
         run: bun install --frozen-lockfile
 
-      - name: Update types package version
+      # tsdown bundles @better-s-stack/types and @better-s-stack/template-generator
+      # into the CLI artifact (GitHub Packages only allows the repo-owner scope,
+      # so those internal packages are never published). Turbo builds the
+      # workspace deps first (build dependsOn ^build), producing a self-contained
+      # dist in a single step.
+      - name: Build CLI (bundles internal packages)
         if: steps.check-version.outputs.exists == 'false'
-        run: |
-          VERSION="${{ steps.version.outputs.version }}"
-          cd packages/types
-          jq --arg v "$VERSION" '.version = $v' package.json > tmp.json && mv tmp.json package.json
+        run: bun run build:cli
+        env:
+          BTS_TELEMETRY: 1
+          CONVEX_INGEST_URL: ${{ secrets.CONVEX_INGEST_URL }}
 
-      - name: Build types package
-        if: steps.check-version.outputs.exists == 'false'
-        run: cd packages/types && bun run build
-
-      - name: Update template-generator package version and types dependency
-        if: steps.check-version.outputs.exists == 'false'
-        run: |
-          VERSION="${{ steps.version.outputs.version }}"
-          cd packages/template-generator
-          jq --arg v "$VERSION" --arg dep "^$VERSION" '.version = $v | .dependencies["@better-t-stack/types"] = $dep' package.json > tmp.json && mv tmp.json package.json
-
-      - name: Build template-generator package
-        if: steps.check-version.outputs.exists == 'false'
-        run: cd packages/template-generator && bun run build
-
-      - name: Update CLI types and template-generator dependencies and version
+      - name: Set version and strip bundled workspace devDeps
         if: steps.check-version.outputs.exists == 'false'
         run: |
           VERSION="${{ steps.version.outputs.version }}"
           cd apps/cli
-          jq --arg v "^$VERSION" '.dependencies["@better-t-stack/types"] = $v | .dependencies["@better-t-stack/template-generator"] = $v' package.json > tmp.json && mv tmp.json package.json
+          # The internal packages are inlined into dist, so the published manifest
+          # must not carry workspace: protocol refs that npm can't resolve.
+          jq --arg v "$VERSION" '
+            .version = $v
+            | del(.devDependencies["@better-s-stack/types"])
+            | del(.devDependencies["@better-s-stack/template-generator"])
+          ' package.json > tmp.json && mv tmp.json package.json
 
-      - name: Build CLI
-        if: steps.check-version.outputs.exists == 'false'
-        run: cd apps/cli && bun run build
-        env:
-          BTS_TELEMETRY: 1
-          CONVEX_INGEST_URL: ${{ secrets.CONVEX_INGEST_URL }}
-
-      - name: Update create-bts alias package version
-        if: steps.check-version.outputs.exists == 'false'
-        run: |
-          VERSION="${{ steps.version.outputs.version }}"
-          cd packages/create-bts
-          jq --arg v "$VERSION" --arg dep "^$VERSION" '.version = $v | .dependencies["create-better-t-stack"] = $dep' package.json > tmp.json && mv tmp.json package.json
-
-      - name: Setup pnpm
-        if: steps.check-version.outputs.exists == 'false'
-        uses: pnpm/action-setup@v6
-        with:
-          version: latest
-
-      # Gate all publishes on the smoke so a failure here doesn't leave a
-      # partial release on npm (e.g. types/template-generator published but
-      # create-better-t-stack broken).
+      # Gate the publish on the smoke so a broken artifact never reaches the
+      # registry (missing files, broken bin entry, import failures, etc.).
       - name: Publish smoke test (npm, pnpm, bun)
         if: steps.check-version.outputs.exists == 'false'
         run: bun run smoke:publish
 
-      - name: Publish types to NPM
+      - name: Publish CLI to GitHub Packages
         if: steps.check-version.outputs.exists == 'false'
-        run: cd packages/types && npm publish --access public
+        run: cd apps/cli && npm publish
         env:
-          BTS_TELEMETRY: 1
-          CONVEX_INGEST_URL: ${{ secrets.CONVEX_INGEST_URL }}
-
-      - name: Publish template-generator to NPM
-        if: steps.check-version.outputs.exists == 'false'
-        run: cd packages/template-generator && npm publish --access public
-        env:
-          BTS_TELEMETRY: 1
-          CONVEX_INGEST_URL: ${{ secrets.CONVEX_INGEST_URL }}
-
-      - name: Publish CLI to NPM
-        if: steps.check-version.outputs.exists == 'false'
-        run: cd apps/cli && npm publish --access public
-        env:
-          BTS_TELEMETRY: 1
-          CONVEX_INGEST_URL: ${{ secrets.CONVEX_INGEST_URL }}
-
-      - name: Publish create-bts alias to NPM
-        if: steps.check-version.outputs.exists == 'false'
-        run: cd packages/create-bts && npm publish --access public
-        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BTS_TELEMETRY: 1
           CONVEX_INGEST_URL: ${{ secrets.CONVEX_INGEST_URL }}
 
@@ -186,11 +154,8 @@ jobs:
           VERSION="${{ steps.version.outputs.version }}"
           echo "## Release v$VERSION Complete!" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Published Packages" >> $GITHUB_STEP_SUMMARY
-          echo "- [create-better-t-stack@$VERSION](https://www.npmjs.com/package/create-better-t-stack/v/$VERSION)" >> $GITHUB_STEP_SUMMARY
-          echo "- [create-bts@$VERSION](https://www.npmjs.com/package/create-bts/v/$VERSION)" >> $GITHUB_STEP_SUMMARY
-          echo "- [@better-t-stack/types@$VERSION](https://www.npmjs.com/package/@better-t-stack/types/v/$VERSION)" >> $GITHUB_STEP_SUMMARY
-          echo "- [@better-t-stack/template-generator@$VERSION](https://www.npmjs.com/package/@better-t-stack/template-generator/v/$VERSION)" >> $GITHUB_STEP_SUMMARY
+          echo "### Published Package" >> $GITHUB_STEP_SUMMARY
+          echo "- \`@sciam-fr/create-better-s-stack@$VERSION\` → [GitHub Packages](https://github.com/${{ github.repository }}/pkgs/npm/create-better-s-stack)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### GitHub Release" >> $GITHUB_STEP_SUMMARY
           echo "[v$VERSION](https://github.com/${{ github.repository }}/releases/tag/v$VERSION)" >> $GITHUB_STEP_SUMMARY

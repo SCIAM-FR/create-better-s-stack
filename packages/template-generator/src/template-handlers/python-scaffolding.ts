@@ -1,4 +1,4 @@
-import type { Database, ProjectConfig } from "@better-t-stack/types";
+import type { Database, ProjectConfig } from "@better-s-stack/types";
 
 import type { VirtualFileSystem } from "../core/virtual-fs";
 import { hasHeavyGenai } from "./python-deps";
@@ -158,7 +158,7 @@ volumes:
   }
 }
 
-const TRAIN_STARTER = `"""Opt-in training starter scaffolded by Better-T-Stack.
+const TRAIN_STARTER = `"""Opt-in training starter scaffolded by Better-S-Stack.
 
 Run with: uv run --extra train python train.py
 """
@@ -172,7 +172,7 @@ if __name__ == "__main__":
     main()
 `;
 
-const SERVE_STARTER = `"""Opt-in vLLM serving starter scaffolded by Better-T-Stack.
+const SERVE_STARTER = `"""Opt-in vLLM serving starter scaffolded by Better-S-Stack.
 
 Run with: uv run --extra serve python serve.py
 """
@@ -191,7 +191,7 @@ if __name__ == "__main__":
     main()
 `;
 
-const ML_TRAIN_STARTER = `"""Opt-in ML training starter scaffolded by Better-T-Stack.
+const ML_TRAIN_STARTER = `"""Opt-in ML training starter scaffolded by Better-S-Stack.
 
 Run with: uv run --extra ml python train.py
 """
@@ -206,7 +206,7 @@ if __name__ == "__main__":
 `;
 
 function agentStarter(framework: string): string {
-  return `"""Opt-in agent-loop starter scaffolded by Better-T-Stack.
+  return `"""Opt-in agent-loop starter scaffolded by Better-S-Stack.
 
 Built for: ${framework}
 Run with: uv run --extra agents python agent.py

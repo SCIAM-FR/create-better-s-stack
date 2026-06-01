@@ -1,5 +1,5 @@
 export default {
-  repo: "AmanVarshney01/create-better-t-stack",
+  repo: "SCIAM-FR/create-better-s-stack",
   emoji: true,
   contributors: true,
 };

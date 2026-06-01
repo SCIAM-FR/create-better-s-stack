@@ -7,6 +7,11 @@ export default defineConfig({
   shims: true,
   outDir: "dist",
   dts: true,
+  // Bundle the internal workspace packages into the published artifact. GitHub
+  // Packages requires every published scope to match the repo owner (@sciam-fr),
+  // so @better-s-stack/* can't be published there — instead they ship inlined
+  // and the CLI publishes as a single self-contained private package.
+  noExternal: [/^@better-s-stack\//],
   outputOptions: {
     banner: "#!/usr/bin/env node",
   },

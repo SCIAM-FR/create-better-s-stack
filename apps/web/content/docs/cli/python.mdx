@@ -3,14 +3,14 @@ title: Python Ecosystem
 description: Scaffold Python projects with uv — app shapes, ORMs, ML/GenAI/Agents capability packs, accelerators, and Docker deploy
 ---
 
-Better-T-Stack is polyglot. The top-level `--ecosystem` flag switches the whole
+Better-S-Stack is polyglot. The top-level `--ecosystem` flag switches the whole
 stack between the default TypeScript experience and a Python one. When
 `--ecosystem python` is set, the TypeScript stack fields collapse to inert
 values and a parallel set of `--python-*` options takes over, all installed and
 run with [uv](https://docs.astral.sh/uv/).
 
 ```bash
-create-better-t-stack my-api --ecosystem python --python-app fastapi
+create-better-s-stack my-api --ecosystem python --python-app fastapi
 ```
 
 ## The ecosystem switch
@@ -38,7 +38,7 @@ into one runnable shape:
 - `none`: no app shape.
 
 ```bash
-create-better-t-stack my-app --ecosystem python --python-app fastapi+streamlit
+create-better-s-stack my-app --ecosystem python --python-app fastapi+streamlit
 ```
 
 ## ORM + database
@@ -54,7 +54,7 @@ dependency, emits `db.py` scaffolding, and — for server databases — a local
 `docker-compose.yml`. MongoDB is **not** supported for Python in v1.
 
 ```bash
-create-better-t-stack my-app --ecosystem python --python-app fastapi \
+create-better-s-stack my-app --ecosystem python --python-app fastapi \
   --python-orm sqlalchemy --database postgres
 ```
 
@@ -101,7 +101,7 @@ Opt-in. Emits a per-pack starter module: `train.py` for ML/heavy-train packs,
 `serve.py` for vLLM, and `agent.py` for the agents pack.
 
 ```bash
-create-better-t-stack my-trainer --ecosystem python --python-app library \
+create-better-s-stack my-trainer --ecosystem python --python-app library \
   --python-ml pytorch --accelerator cu124 --python-starter
 ```
 
@@ -133,7 +133,7 @@ A generated Python project records a reproducible command carrying the Python
 flags, for example:
 
 ```bash
-npx create-better-t-stack@latest my-app --ecosystem python \
+bun create @sciam-fr/better-s-stack@latest my-app --ecosystem python \
   --python-app fastapi --python-orm sqlalchemy --database postgres \
   --python-ml pytorch --accelerator cu124 --python-starter
 ```

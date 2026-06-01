@@ -121,7 +121,7 @@ describe("Input schemas", () => {
     expect(typeof module.createBtsMcpServer).toBe("function");
   });
 
-  it("exposes the Better T Stack config file JSON schema by name", () => {
+  it("exposes the Better S Stack config file JSON schema by name", () => {
     const schemaName = SchemaNameSchema.safeParse("betterTStackConfigFile");
 
     expect(schemaName.success).toBe(true);

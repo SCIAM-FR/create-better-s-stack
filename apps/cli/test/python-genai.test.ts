@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 
-import { PythonGenaiListSchema } from "@better-t-stack/types";
+import { PythonGenaiListSchema } from "@better-s-stack/types";
 
 import { createVirtual } from "../src/index";
 import { collectFiles } from "./setup";

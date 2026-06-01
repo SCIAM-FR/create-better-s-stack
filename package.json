@@ -26,12 +26,12 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "dev:cli": "turbo run dev --filter=create-better-t-stack",
+    "dev:cli": "turbo run dev --filter=@sciam-fr/create-better-s-stack",
     "cli": "cd apps/cli && node dist/cli.js",
     "smoke:publish": "bun run scripts/publish-smoke.ts",
     "dev:web": "turbo run dev --filter=web",
     "build:web": "turbo run build --filter=web",
-    "build:cli": "turbo run build --filter=create-better-t-stack",
+    "build:cli": "turbo run build --filter=@sciam-fr/create-better-s-stack",
     "test": "bun run check && cd apps/cli && bun test",
     "test:complete": "bun run check && bun run build && cd apps/cli && BTS_MATRIX_MODE=smoke BTS_BUILD_SAMPLES=1 bun test --bail=5",
     "lint": "turbo run lint",
@@ -41,7 +41,7 @@
     "bump": "bun run scripts/bump-version.ts",
     "canary": "bun run scripts/canary-release.ts",
     "cleanup-previews": "bun run scripts/cleanup-previews.ts",
-    "deploy:convex": "turbo run --filter=@better-t-stack/backend deploy",
+    "deploy:convex": "turbo run --filter=@better-s-stack/backend deploy",
     "deploy:web": "turbo run deploy --filter=web",
     "generate": "turbo run generate-schema --filter=web",
     "deploy": "turbo run deploy --filter=web"

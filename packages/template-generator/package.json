@@ -1,7 +1,7 @@
 {
-  "name": "@better-t-stack/template-generator",
+  "name": "@better-s-stack/template-generator",
   "version": "3.30.3",
-  "description": "Virtual file system generator for Better-T-Stack templates - works in browsers and Node.js",
+  "description": "Virtual file system generator for Better-S-Stack templates - works in browsers and Node.js",
   "keywords": [
     "better-t-stack",
     "cli",
@@ -9,12 +9,12 @@
     "typescript",
     "virtual-fs"
   ],
-  "homepage": "https://better-t-stack.dev/",
+  "homepage": "https://better-s-stack.sciam.fr/",
   "license": "MIT",
   "author": "Aman Varshney",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AmanVarshney01/create-better-t-stack.git",
+    "url": "git+https://github.com/SCIAM-FR/create-better-s-stack.git",
     "directory": "packages/template-generator"
   },
   "files": [
@@ -48,7 +48,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@better-t-stack/types": "^3.30.3",
+    "@better-s-stack/types": "^3.30.3",
     "better-result": "^2.9.2",
     "handlebars": "^4.7.9",
     "memfs": "^4.57.2",
